@@ -122,6 +122,47 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/sources": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Sources de données citées par l’application
+         * @description Toutes les sources (Terre et Lune), avec l’organisme, l’adresse et la mention à reproduire. `valueSources` de `GET /api/sites/{id}` renvoie l’`id` de ces sources.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Catalogue des sources */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            sources: components["schemas"]["DataSource"][];
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/reference/moon": {
         parameters: {
             query?: never;
@@ -184,7 +225,7 @@ export interface paths {
         /**
          * Classer les sites candidats pour un mode ou des critères libres
          * @description Envoyer soit `mode` (modes 1 à 3), soit `criteria` (mode 4), jamais les deux.
-         *     Le filtre « sol nu » (NDVI ≤ 0,1) est actif par défaut : un site végétalisé garde `total` 0, porte
+         *     Le filtre « sol nu » (NDVI ≤ 0,2) est actif par défaut : un site végétalisé garde `total` 0, porte
          *     `excluded: "vegetation"` et passe à la fin de la liste. Les autres sites sont triés par `total` décroissant.
          */
         post: {
@@ -400,7 +441,7 @@ export interface components {
             /** @description Mode 4 : un paramètre au plus une fois ; chaque critère a min, max ou les deux. */
             criteria?: components["schemas"]["Criterion"][];
             /**
-             * @description Filtre « sol nu » (NDVI ≤ 0,1). Désactivable en mode 4.
+             * @description Filtre « sol nu » (NDVI ≤ 0,2). Désactivable en mode 4.
              * @default true
              */
             bareSoilOnly: boolean;
@@ -434,6 +475,31 @@ export interface components {
                 [key: string]: number | null;
             };
             sources: string[];
+            /** @description Source de chaque valeur connue : id du catalogue `GET /api/sources` (ou `fixtures` en mode données d’exemple). */
+            valueSources: {
+                [key: string]: string;
+            };
+            /** @description Référence lunaire (data/reference/moon-south-pole.json) de chaque paramètre sourcé, quel que soit le mode. Un paramètre sans référence est absent. */
+            moon: {
+                [key: string]: components["schemas"]["MoonValue"];
+            };
+        };
+        MoonValue: {
+            min?: number;
+            max?: number;
+            unit?: string;
+            source?: string;
+        };
+        DataSource: {
+            /** @example nasa-power */
+            id: string;
+            name: string;
+            provider: string;
+            url: string;
+            /** @enum {string} */
+            body: "earth" | "moon";
+            params: components["schemas"]["ParamId"][];
+            terms: string;
         };
         Error: {
             error: string;
