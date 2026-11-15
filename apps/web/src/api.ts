@@ -63,7 +63,7 @@ const catalogCoversContract: ParamId extends (typeof parameterCatalog)[number]['
 void catalogCoversContract
 
 /** What the parameter means on the Moon when the profile has no numeric range (proxy or sourced context). */
-export const MOON_NOTES: Partial<Record<ParamId, string>> = {
+const MOON_NOTES: Partial<Record<ParamId, string>> = {
   t2m_mean: 'No air on the Moon: proxy for frozen ground',
   t2m_min: 'No air: proxy for extreme cold (29–50 K in shadow)',
   t2m_max: 'No air on the Moon',

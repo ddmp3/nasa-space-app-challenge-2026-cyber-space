@@ -49,7 +49,7 @@ docker compose up --build        # front end http://localhost:8080, API http://l
 python3 tools/validation/e2e.py  # end-to-end tests against the running app
 ```
 
-Stack: React, TypeScript, Vite, Tailwind, Leaflet · Node.js, TypeScript, Express, OpenAPI · Python (precompute, validation) · Docker, Terraform, Azure (Static Web App, Container Apps). Details: [docs/architecture.md](docs/architecture.md).
+Stack: React, TypeScript, Vite, Leaflet · Node.js, TypeScript, Express, OpenAPI · Python (precompute, validation) · Docker, Terraform, Azure (Static Web App, Container Apps). Details: [docs/architecture.md](docs/architecture.md).
 
 ## Use of AI
 
