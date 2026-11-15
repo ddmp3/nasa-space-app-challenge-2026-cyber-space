@@ -1,6 +1,6 @@
 # Modes et paramètres (MVP Terre ↔ Lune)
 
-> **Statut : première proposition.** Les intervalles et poids sont des ordres de grandeur à valider par l'équipe (Ouassim pour la robotique et les instruments, avec références). Chaque valeur modifiée doit citer sa source.
+> **Statut : première proposition.** Les intervalles et poids sont des ordres de grandeur à valider par l'équipe (Wassim pour la robotique et les instruments, avec références). Chaque valeur modifiée doit citer sa source.
 
 ## Catalogue des paramètres
 

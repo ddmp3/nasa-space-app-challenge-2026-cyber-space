@@ -4,7 +4,7 @@ Ces formats permettent à chacun de travailler sur sa branche **sans attendre le
 
 Identifiants de paramètres (`ParamId`) : ceux du catalogue de [scenarios.md](scenarios.md#catalogue-des-paramètres) (`slope_mean`, `t2m_min`, `quake_count`…).
 
-## 1. Sites candidats — `data/candidates.json` (Ouassim)
+## 1. Sites candidats — `data/candidates.json` (Wassim)
 
 ```json
 [
@@ -17,7 +17,7 @@ Identifiants de paramètres (`ParamId`) : ceux du catalogue de [scenarios.md](sc
 - `terrain` : `polar` | `desert` | `volcanic` | `impact` | `plateau` | `forest` | `other`.
 - `role` : `validation` (analogue connu) | `negative` (témoin) | `candidate` (site peu étudié).
 
-## 2. Profil lunaire de référence — `data/reference/moon-south-pole.json` (David + Ouassim)
+## 2. Profil lunaire de référence — `data/reference/moon-south-pole.json` (David + Wassim)
 
 ```json
 {

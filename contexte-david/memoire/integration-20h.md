@@ -10,7 +10,7 @@ metadata:
 
 Décision du 14/11/2026 : pas de déploiement partiel. On compile le projet complet une fois les sources prêtes (cible initiale : sam 14/11 20 h, Montréal), puis `deploy.sh` (issue #3) ; objectif : app exploitable le dim 15/11. **David relit et fusionne toutes les PR** (pas François).
 
-État à sam 22 h 55 : rien de fusionné. PR ouvertes : #38 (David, moteur de score, base main), #50 (Jesus, serveur Express + POWER/USGS + OpenAPI, **base = david/moteur-score**), #49 (François, front apps/web), #48 (Yann, maquettes, 2 solutions d'interface à arbitrer), #47 (Ouassim, un .docx). Ordre de fusion conseillé : #38 → #50 → #49 → #48 ; #47 à convertir en données.
+État à sam 22 h 55 : rien de fusionné. PR ouvertes : #38 (David, moteur de score, base main), #50 (Jesus, serveur Express + POWER/USGS + OpenAPI, **base = david/moteur-score**), #49 (François, front apps/web), #48 (Yann, maquettes, 2 solutions d'interface à arbitrer), #47 (Wassim, un .docx). Ordre de fusion conseillé : #38 → #50 → #49 → #48 ; #47 à convertir en données.
 
 Dim 15/11 : David reprend sur son Mac portable sur site ; sam soir sur son PC. Le contexte complet est dans `contexte-david/` (branche `david/contexte`).
 

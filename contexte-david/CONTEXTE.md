@@ -16,7 +16,7 @@ Ce fichier résume tout ce qu'il faut savoir pour reprendre le travail avec Clau
 | David | Chef de projet, infra Azure, moteur de score. **Relit et fusionne toutes les PR.** | `ddmp3` (propriétaire du repo) |
 | Jesus | API et sources de données | `jesuslayer` |
 | François | Front (à ne pas confondre avec Xavier ; on n'écrit plus « François-Xavier ») | `francoisxavierdussault` |
-| Ouassim | Expertise métier (robotique, instruments), données | `wassim123-coder` |
+| Wassim | Expertise métier (robotique, instruments), données | `wassim123-coder` |
 | Yann | Expérience utilisateur, tests fonctionnels | `K35k1ld1` |
 | Xavier | Sécurité, présentation, soumission | `rhapirou` |
 
@@ -42,7 +42,7 @@ Docs, contrats, fixtures, Terraform. Dernier commit : `f4f75fe`.
 | **#50** | Jesus | `jesus/api-serveur` → **`david/moteur-score`** | Serveur Express (`/api/health`, `/modes`, `/parameters`, `/reference/moon`, `POST /analyze`, `/sites/{id}`, `/docs`), `openapi.yaml`, connecteurs POWER et USGS avec cache, géométrie DEM précalculée (`data/candidates-geometry.json`), CORS, rate limit, Dockerfile | Construite sur #38 : la fusionner **après** #38 (GitHub la rebascule sur `main`). Elle remplit aussi la tâche de route `/api/analyze` de David (issue #4). |
 | **#49** | François | `francois-ui` → `main` | Front `apps/web` : choix des modes, carte Leaflet, fiche site, critères libres, client API | À tester de bout en bout une fois #38 et #50 fusionnées. |
 | **#48** | Yann | `maquettes-yann` → `main` | Maquettes HTML cliquables + captures : **solution 1** (exploration libre) et **solution 2** (parcours narratif en 4 chapitres) | Arbitrage d'équipe à faire. La solution 2 colle à la vision « après le MVP ». |
-| **#47** | Ouassim | `Sample-of-data-collection-…` → `main` | Un fichier `Sample 2.docx` (données des modes 1 et 2, valeurs lunaires manquantes) | Ne pas fusionner un .docx tel quel : en extraire les valeurs vers `docs/scenarios.md` ou `data/reference/moon-south-pole.json`. |
+| **#47** | Wassim | `Sample-of-data-collection-…` → `main` | Un fichier `Sample 2.docx` (données des modes 1 et 2, valeurs lunaires manquantes) | Ne pas fusionner un .docx tel quel : en extraire les valeurs vers `docs/scenarios.md` ou `data/reference/moon-south-pole.json`. |
 
 **Ordre de fusion conseillé : #38 → #50 → #49 → #48**, puis #47 converti en données.
 
@@ -74,7 +74,7 @@ Vérifier si #50 a déjà intégré une partie de ces branches avant de demander
 4. Arbitrer #48 (solution 1 ou 2) avec l'équipe ; traiter #47.
 5. Avec accord de David : `./infra/terraform/deploy.sh` (prérequis : `az login`, `terraform`, `docker`).
 6. Mettre à jour `docs/plan-projet.md` et la page de suivi.
-7. Dimanche : tests (Yann), vérification des classements (Ouassim), gel du code à 12 h, démo et soumission (Xavier).
+7. Dimanche : tests (Yann), vérification des classements (Wassim), gel du code à 12 h, démo et soumission (Xavier).
 
 ## 7. Liens et outils
 
@@ -83,7 +83,7 @@ Vérifier si #50 a déjà intégré une partie de ces branches avant de demander
   - Pour la modifier : demander à Claude de lire l'artifact par son URL (`Artifact` action `read`), modifier, puis republier sur la **même URL**. Une copie de la source au 14/11 22 h 55 est dans [outils/page-suivi/plan-cyberspace.html](outils/page-suivi/plan-cyberspace.html). Toujours repartir de la version en ligne, l'équipe a pu la changer.
   - La page n'est lisible que par David tant qu'elle n'est pas partagée (menu Partager de la page).
 - Repo : https://github.com/ddmp3/nasa-space-app-challenge-2026-cyber-space
-- Issues : libellés `david`, `jesus`, `francois`, `ouassim`, `yann`, `xavier`, `apres-mvp`.
+- Issues : libellés `david`, `jesus`, `francois`, `wassim`, `yann`, `xavier`, `apres-mvp`.
 - [outils/compare-scorers.mjs](outils/compare-scorers.mjs) compare le moteur TS et le scorer Python (mode d'emploi dans le [README](README.md)).
 - [outils/create-issues.sh](outils/create-issues.sh) a servi à créer les issues #3 à #37. On peut le relancer sans risque : il saute les titres existants.
 
