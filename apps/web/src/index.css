@@ -1,7 +1,8 @@
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap");
 @import "tailwindcss";
 
 :root {
-  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  font-family: "Archivo", "Segoe UI", Arial, sans-serif;
   color: #ecedf5;
   background: #080a12;
   font-synthesis: none;
@@ -11,14 +12,14 @@
   font-optical-sizing: auto;
   font-weight: 400;
 
-  --background: #080a12;
-  --panel: #11141f;
-  --panel-soft: #151927;
-  --border: rgba(209, 218, 255, 0.1);
-  --muted: #8d94a8;
-  --text: #ecedf5;
-  --accent: #c5f47c;
-  --blue: #859aff;
+  --background: #0e1626;
+  --panel: #142033;
+  --panel-soft: #1a2840;
+  --border: #24334c;
+  --muted: #9aa8bf;
+  --text: #eaf0f8;
+  --accent: #e8a33d;
+  --blue: #8ab0ff;
 }
 
 * {
@@ -30,7 +31,7 @@ body {
   min-height: 100vh;
   margin: 0;
   background:
-    radial-gradient(ellipse at 75% -20%, rgba(80, 94, 152, 0.19), transparent 50%),
+    radial-gradient(ellipse at 72% -20%, rgba(76, 107, 163, 0.2), transparent 52%),
     var(--background);
 }
 

@@ -16,6 +16,14 @@ Le mode de calibration permet de filtrer les critères par instrument. Les crit�
 
 Pour lancer une analyse avec l’API, démarrez `apps/api` et définissez `VITE_API_URL` dans `apps/web/.env.local` (par exemple `VITE_API_URL=http://localhost:3001`). L’interface envoie les requêtes à `POST /api/analyze` et charge les valeurs détaillées avec `GET /api/sites/{id}`.
 
+Le client HTTP utilise les types générés depuis le contrat OpenAPI :
+
+```bash
+npm run generate:api
+```
+
+Cette commande lit `../api/openapi.yaml` et met à jour `src/generated/openapi.ts`. La génération utilise une toolchain TypeScript isolée, car le projet web utilise une version de TypeScript différente de celle attendue par le générateur.
+
 ## Vérifications
 
 ```bash
