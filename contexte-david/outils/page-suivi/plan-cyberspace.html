@@ -1,0 +1,488 @@
+<title>Plan Cyber&amp;Space</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout : bandeau mission, frise des jalons, relais entre membres, filtre par membre, cartes de tâches par personne. */
+:root {
+  --bg: #f4f6f9;
+  --surface: #ffffff;
+  --fg: #172033;
+  --muted: #5b6577;
+  --line: #dde2ea;
+  --accent: #2c55c9;
+  --accent-soft: #e6ecfb;
+  --ok: #1f8a4c;
+  --ok-soft: #e3f4ea;
+  --late: #b4441f;
+  --late-soft: #fbe9e2;
+  --wait: #8a6a12;
+  --wait-soft: #fbf3dc;
+  --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1420; --surface: #171e2d; --fg: #e6eaf2; --muted: #9aa4b6; --line: #293245;
+    --accent: #7d9cf5; --accent-soft: #1f2a48; --ok: #5fcf8e; --ok-soft: #173326;
+    --late: #f08b65; --late-soft: #3a2119; --wait: #e7c45f; --wait-soft: #352c14; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1420; --surface: #171e2d; --fg: #e6eaf2; --muted: #9aa4b6; --line: #293245;
+  --accent: #7d9cf5; --accent-soft: #1f2a48; --ok: #5fcf8e; --ok-soft: #173326;
+  --late: #f08b65; --late-soft: #3a2119; --wait: #e7c45f; --wait-soft: #352c14; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 48px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 30px; }
+section { display: grid; gap: 12px; min-width: 0; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(1.7rem, 4vw, 2.4rem); letter-spacing: -0.01em; }
+h2 { font-size: 1.15rem; }
+h3 { font-size: 1.05rem; }
+p { margin: 0; }
+a { color: var(--accent); }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.eyebrow { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.lead { max-width: 75ch; color: var(--muted); }
+
+header { display: grid; gap: 10px; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 0.9rem; color: var(--muted); }
+.meta strong { color: var(--fg); font-weight: 600; }
+
+.timeline { overflow-x: auto; }
+.timeline ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(130px, 1fr)); gap: 8px; min-width: 900px; }
+.timeline li { border-top: 3px solid var(--line); padding-top: 8px; display: grid; gap: 2px; }
+.timeline li.past { border-top-color: var(--muted); opacity: 0.7; }
+.timeline li.now { border-top-color: var(--accent); }
+.timeline li.now .when::after { content: " · maintenant"; color: var(--accent); font-weight: 600; }
+.timeline li.freeze { border-top-color: var(--late); }
+.timeline .when { font-size: 0.8rem; color: var(--muted); }
+.timeline .what { font-weight: 600; font-size: 0.92rem; }
+.timeline .out { font-size: 0.82rem; color: var(--muted); }
+
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px 24px; font-size: 0.9rem; color: var(--muted); padding: 0; margin: 0; list-style: none; }
+.rules li { padding-left: 14px; position: relative; }
+.rules li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+.relay-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+table.relay { width: 100%; border-collapse: collapse; font-size: 0.88rem; min-width: 760px; }
+.relay th { text-align: left; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.relay td { padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.relay tr:last-child td { border-bottom: 0; }
+.relay .who { font-weight: 600; white-space: nowrap; }
+.relay .what { color: var(--muted); display: block; font-size: 0.84rem; }
+.relay .alt { color: var(--fg); }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.chip { font: inherit; font-size: 0.9rem; border: 1px solid var(--line); background: var(--surface); color: var(--fg); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+.chip:focus-visible, .task input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.status { font-size: 0.85rem; color: var(--muted); margin-left: auto; }
+
+.people { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 18px; align-items: start; }
+.person { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 14px; min-width: 0; }
+.person-head { display: grid; gap: 4px; }
+.person-head .role { color: var(--muted); font-size: 0.9rem; }
+.progress { display: flex; align-items: center; gap: 10px; font-size: 0.82rem; color: var(--muted); }
+.bar { flex: 1; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.bar span { display: block; height: 100%; background: var(--ok); width: 0; transition: width 0.3s; }
+.first { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; font-size: 0.9rem; }
+.first b { display: block; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.tasks { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.task { border-radius: 6px; }
+.task label { display: grid; grid-template-columns: 20px 1fr; gap: 10px; padding: 8px 6px; cursor: pointer; }
+.task label:hover { background: var(--bg); }
+.task input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--ok); cursor: pointer; }
+.task .body { display: grid; gap: 4px; min-width: 0; }
+.task .due { font-size: 0.75rem; color: var(--muted); display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.task .links-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 0.78rem; color: var(--muted); }
+.task .alt { font-size: 0.82rem; color: var(--fg); background: var(--wait-soft); border-radius: 6px; padding: 6px 8px; }
+.task .alt b { color: var(--wait); font-weight: 600; }
+.task.is-done .txt { text-decoration: line-through; color: var(--muted); }
+.task.is-done .alt { display: none; }
+.pill { font-size: 0.7rem; font-weight: 600; padding: 1px 8px; border-radius: 999px; white-space: nowrap; }
+.pill.late { background: var(--late-soft); color: var(--late); }
+.pill.done { background: var(--ok-soft); color: var(--ok); }
+.pill.bonus { background: var(--accent-soft); color: var(--accent); }
+.pill.wait { background: var(--wait-soft); color: var(--wait); }
+.pill.give { background: var(--accent-soft); color: var(--accent); }
+.pill.free { background: var(--ok-soft); color: var(--ok); }
+footer { font-size: 0.85rem; color: var(--muted); display: grid; gap: 6px; }
+@media (prefers-reduced-motion: reduce) { .bar span { transition: none; } }
+@media (max-width: 420px) { .people { grid-template-columns: 1fr; } .status { margin-left: 0; width: 100%; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">NASA Space Apps 2026 · Cyber&amp;Space Montréal</span>
+    <h1>Sites analogues Terre ↔ Lune : plan du week-end</h1>
+    <p class="lead">Livrer dimanche une application web en ligne sur Azure : on choisit un des 4 modes (validation robotique, calibration d'instruments, colonie autosuffisante, critères libres) et la carte classe les sites terrestres, avec un score global, un score par critère et ce qui correspond ou non. Mars viendra en phase 2.</p>
+    <div class="meta">
+      <span>Gel du code : <strong class="mono">dim 15 nov · 12 h</strong></span>
+      <span>Repo : <a href="https://github.com/ddmp3/nasa-space-app-challenge-2026-cyber-space" target="_blank" rel="noopener">ddmp3/nasa-space-app-challenge-2026-cyber-space</a></span>
+    </div>
+  </header>
+
+  <section aria-labelledby="t-cal">
+    <h2 id="t-cal">Calendrier</h2>
+    <div class="timeline"><ol id="timeline"></ol></div>
+  </section>
+
+  <section aria-labelledby="t-rules">
+    <h2 id="t-rules">Règles de l'équipe</h2>
+    <ul class="rules">
+      <li>Une branche par tâche, une PR vers <span class="mono">main</span>. David relit et fusionne les PR (revue de code avant chaque fusion).</li>
+      <li>Personne n'attend personne : codez contre les <a href="https://github.com/ddmp3/nasa-space-app-challenge-2026-cyber-space/blob/main/docs/contrats.md" target="_blank" rel="noopener">contrats partagés</a> et les données d'exemple (<span class="mono">data/fixtures/</span>), puis branchez le vrai livrable quand il arrive.</li>
+      <li>Un changement de contrat se décide en équipe, dans une PR dédiée.</li>
+      <li>Aucun secret dans le repo (.env, clés, state Terraform).</li>
+      <li>Bloqué plus de 30 minutes : dites-le dans le canal d'équipe. Points de 10 minutes : sam 20 h, sam minuit, dim 9 h, dim 12 h.</li>
+      <li>Cochez vos tâches ici dès qu'elles sont faites : les personnes qui vous attendent le voient en direct.</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="t-relay">
+    <h2 id="t-relay">Passages de relais</h2>
+    <p class="lead">Chaque ligne est une tâche qui en attend une autre, d'une autre personne. La colonne de droite dit comment avancer sur votre branche sans attendre.</p>
+    <div class="relay-wrap">
+      <table class="relay">
+        <thead><tr><th scope="col">Qui attend</th><th scope="col">Attend</th><th scope="col">Prévu</th><th scope="col">État</th><th scope="col">Pour avancer sans attendre</th></tr></thead>
+        <tbody id="relay"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="t-todo">
+    <h2 id="t-todo">Qui fait quoi</h2>
+    <div class="toolbar" role="group" aria-label="Filtrer par membre">
+      <div id="filters" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+      <span class="status" id="status" aria-live="polite">Chargement de l'avancement…</span>
+    </div>
+    <div class="people" id="people"></div>
+  </section>
+
+  <section aria-labelledby="t-repo">
+    <h2 id="t-repo">État du dépôt · sam 16 h 30</h2>
+    <p class="lead">Ce qui existe déjà : à réutiliser plutôt qu'à refaire. Toutes les branches sont relues et fusionnées par David à 20 h au plus tard.</p>
+    <div class="relay-wrap">
+      <table class="relay">
+        <thead><tr><th scope="col">Branche</th><th scope="col">Contenu</th><th scope="col">PR</th></tr></thead>
+        <tbody>
+          <tr><td><span class="who mono">david/moteur-score</span><span class="what">David</span></td><td class="alt">Moteur de score TS, service analyze(), profil lunaire (brouillon), 42 tests, docs (plan, ux)</td><td><a href="https://github.com/ddmp3/nasa-space-app-challenge-2026-cyber-space/pull/38" target="_blank" rel="noopener">#38</a> · en revue</td></tr>
+          <tr><td><span class="who mono">search-engine-geolocalization</span><span class="what">Jesus</span></td><td class="alt">Précalcul Copernicus DEM (pente, rugosité, altitude) dans data/candidates.json</td><td>à ouvrir</td></tr>
+          <tr><td><span class="who mono">search-engine-scoring-v1</span><span class="what">Jesus</span></td><td class="alt">Vérificateur Python du score : identique au moteur TS sur les fixtures</td><td>à ouvrir</td></tr>
+          <tr><td><span class="who mono">search_engine_geolocation_v_0</span><span class="what">Jesus</span></td><td class="alt">Prototype Python de référence, hors application (lro.py utile pour le profil lunaire)</td><td>à ouvrir</td></tr>
+          <tr><td><span class="who mono">Francois, francois-ui</span><span class="what">François</span></td><td class="alt">Aucun commit pour l'instant</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="t-next">
+    <h2 id="t-next">Après le MVP : une expérience qui se vit</h2>
+    <p class="lead">Une fois le MVP livré : pas de site à tableaux de données. Le front importe le moteur de score et recalcule tout en direct ; la Terre et la Lune se comparent visuellement. Détails : <a href="https://github.com/ddmp3/nasa-space-app-challenge-2026-cyber-space/blob/david/moteur-score/docs/ux.md" target="_blank" rel="noopener">docs/ux.md</a> · issues <a href="https://github.com/ddmp3/nasa-space-app-challenge-2026-cyber-space/issues?q=label%3Aapres-mvp" target="_blank" rel="noopener">après-mvp</a>.</p>
+    <ul class="rules">
+      <li><b>Re-classement en direct</b> dans le navigateur, sans appel réseau (#39, #40)</li>
+      <li><b>Mode 4 en curseurs</b> reliés à la carte (#41)</li>
+      <li><b>Modes présentés comme des missions</b> illustrées (#42)</li>
+      <li><b>Signature radar</b> du site superposée au profil lunaire (#43)</li>
+      <li><b>Vue « jumeau lunaire »</b> : site terrestre et pôle Sud côte à côte (#44)</li>
+      <li><b>Fiches « découverte »</b> des sites peu étudiés (#45)</li>
+      <li><b>Globe 3D animé</b> des sites candidats (#46)</li>
+    </ul>
+  </section>
+
+  <footer>
+    <span>Détails : <a href="https://github.com/ddmp3/nasa-space-app-challenge-2026-cyber-space/blob/main/docs/contrats.md" target="_blank" rel="noopener">contrats partagés</a> · <a href="https://github.com/ddmp3/nasa-space-app-challenge-2026-cyber-space/blob/main/docs/scenarios.md" target="_blank" rel="noopener">modes et paramètres</a> · <a href="https://github.com/ddmp3/nasa-space-app-challenge-2026-cyber-space/blob/main/docs/sources.md" target="_blank" rel="noopener">sources de données</a> · <a href="https://github.com/ddmp3/nasa-space-app-challenge-2026-cyber-space/blob/main/docs/architecture.md" target="_blank" rel="noopener">architecture</a> · <a href="https://github.com/ddmp3/nasa-space-app-challenge-2026-cyber-space/blob/main/docs/plan-projet.md" target="_blank" rel="noopener">plan complet</a></span>
+    <span>Heures de Montréal. « En retard » : heure dépassée et tâche non cochée. « Attend » passe au vert quand la tâche attendue est cochée.</span>
+  </footer>
+</div>
+
+<script>
+const TZ = "-05:00";
+const at = (d, h) => new Date(`2026-11-${d}T${h}:00${TZ}`);
+
+const MILESTONES = [
+  { start: at(14, "15:00"), when: "sam 15 h", what: "Lancement", out: "Chacun connaît ses tâches" },
+  { start: at(14, "16:00"), when: "sam 16 h", what: "Contrats", out: "API et maquettes figées à 17 h 30" },
+  { start: at(14, "17:30"), when: "sam 17 h 30", what: "Bloc 1", out: "Briques testées séparément" },
+  { start: at(14, "20:00"), when: "sam 20 h au plus tard", what: "Intégration complète", out: "PR fusionnées, puis déploiement Azure" },
+  { start: at(14, "21:00"), when: "sam 21 h", what: "Bloc 2", out: "MVP complet à minuit" },
+  { start: at(15, "09:00"), when: "dim 9 h", what: "Bloc 3 : tests", out: "MVP stable" },
+  { start: at(15, "12:00"), when: "dim 12 h", what: "Gel du code", out: "Démo, vidéo, soumission", freeze: true },
+];
+
+const FIX = "data/fixtures/site-values.json";
+const PEOPLE = [
+  { id: "david", name: "David", role: "Chef de projet · infrastructure · moteur de score",
+    first: "À 20 h au plus tard (plus tôt si toutes les sources sont prêtes) : relire et fusionner les PR, brancher /api/analyze, puis lancer deploy.sh. Pas de déploiement partiel avant.",
+    tasks: [
+      { id: "d0", due: at(14, "16:00"), short: "contrats et données d'exemple", txt: "Contrats partagés (docs/contrats.md) et données d'exemple (data/fixtures/site-values.json), sur main." },
+      { id: "d1", due: at(14, "16:00"), short: "issues GitHub", txt: "Issues GitHub créées (#3 à #37, libellé = prénom) et plan partagé." },
+      { id: "d2", due: at(14, "20:00"), short: "site en ligne (v0)", txt: "Intégration complète puis infra/terraform/deploy.sh : API et site en ligne, URL partagée dans le canal (#3).",
+        needs: ["j1", "f1"], alt: "Appliquer Terraform tout de suite : l'image de démonstration est déjà prévue. Pousser les vraies images dès que les squelettes sont fusionnés." },
+      { id: "d3", due: at(14, "20:00"), short: "moteur de score", txt: "Moteur de score (apps/api/src/scoring/) : intervalles, tolérance, poids, verdicts, filtre NDVI, modes 1 à 3. 42 tests, couverture 100 %. Branche david/moteur-score, en revue.",
+        alt: `Aucune attente : tester avec ${FIX}.` },
+      { id: "d4", due: at(14, "22:00"), short: "profil lunaire", txt: "Remplir data/reference/moon-south-pole.json avec Ouassim (format : docs/contrats.md §2). Fait : brouillon sourcé (latitude, froid des zones d'ombre, absence d'atmosphère). Reste : pente, température de jour, séismes, ensoleillement.",
+        needs: ["o1"], alt: "Commencer avec les intervalles de docs/scenarios.md, sourcer ensuite avec Ouassim." },
+      { id: "d5", due: at(14, "23:30"), short: "/api/analyze branché", txt: "Brancher POST /api/analyze sur le moteur et les connecteurs de Jesus. Fait : service analyze() (validation, fusion des connecteurs, tri) et connecteur factice sur les fixtures. Reste : la route Express sur le squelette de Jesus.",
+        needs: ["j3", "j4", "j5"], alt: `Brancher d'abord un connecteur factice qui lit ${FIX}, puis remplacer source par source.` },
+      { id: "d6", due: at(15, "12:00"), short: "version de démo déployée", txt: "Relire et fusionner les PR (dès ce soir), redéployer à chaque jalon (sam minuit, dim 12 h).",
+        needs: ["f5"], alt: "Redéployer ce qui est fusionné, même incomplet : chaque jalon donne une version testable." },
+    ] },
+  { id: "jesus", name: "Jesus", role: "API et sources de données",
+    first: "Créer apps/api et écrire le contrat OpenAPI avec François.",
+    tasks: [
+      { id: "j1", due: at(14, "17:30"), short: "squelette API", txt: "Créer apps/api (Node + TypeScript + Express, ES modules) avec /api/health, Dockerfile (port 3001) et Swagger UI. package.json, tsconfig et vitest existent déjà dans la branche david/moteur-score : les compléter plutôt que les recréer." },
+      { id: "j2", due: at(14, "17:30"), short: "contrat OpenAPI", txt: "Écrire apps/api/openapi.yaml avec François à partir de docs/contrats.md §5, puis le figer." },
+      { id: "j3", due: at(14, "20:00"), short: "connecteurs POWER + USGS", txt: "Connecteurs NASA POWER et USGS séismes (signature : docs/contrats.md §3)." },
+      { id: "j4", due: at(14, "22:00"), short: "connecteur Copernicus DEM", txt: "Copernicus DEM : pente moyenne, pente max, rugosité. En cours : précalcul Python (tools/precompute, branche search-engine-geolocalization). Reste : la PR et un connecteur qui lit le bloc precomputed." },
+      { id: "j9", due: at(14, "20:00"), short: "vérificateur Python du score", txt: "tools/scoring/score_sites.py (branche search-engine-scoring-v1) : résultats identiques au moteur TS sur les fixtures. Reste : aligner le format des sites exclus sur le contrat." },
+      { id: "j10", due: at(14, "20:00"), short: "PR de ses branches", txt: "Ouvrir les PR de search-engine-geolocalization, search-engine-scoring-v1 et search_engine_geolocation_v_0 pour la revue de 20 h." },
+      { id: "j5", due: at(14, "22:00"), short: "connecteur MODIS", txt: "Connecteur MODIS via Planetary Computer : température de surface et NDVI, nouvelle tentative sur erreur 502." },
+      { id: "j6", due: at(15, "00:00"), short: "GVP, cache, sécurité", txt: "Connecteur Smithsonian GVP, cache mémoire, limitation de débit, CORS." },
+      { id: "j7", due: at(15, "00:00"), short: "routes /parameters /modes /sites", txt: "Routes /api/parameters, /api/modes et /api/sites/{id}. Réutiliser PARAM_IDS et MODES de apps/api/src/scoring (PR #38).",
+        needs: ["o3"], alt: `Servir les 3 sites de ${FIX} en attendant data/candidates.json.` },
+      { id: "j8", due: at(15, "11:00"), bonus: true, short: "explication par Claude", txt: "Explication de site générée par Claude, seulement si le MVP est stable.",
+        needs: ["d5"], alt: `Préparer l'appel et le texte avec un site de ${FIX}.` },
+    ] },
+  { id: "fx", name: "François", role: "Front",
+    first: "Créer apps/web et figer le contrat OpenAPI avec Jesus.",
+    tasks: [
+      { id: "f1", due: at(14, "17:30"), short: "squelette web", txt: "Créer apps/web (React + TypeScript + Vite + Tailwind + Leaflet + zustand)." },
+      { id: "f2", due: at(14, "17:30"), short: "client API typé", txt: "Figer le contrat OpenAPI avec Jesus et générer le client API typé." },
+      { id: "f3", due: at(14, "20:00"), short: "écran d'accueil", txt: "Écran d'accueil : choix entre les 4 modes.",
+        needs: ["y1", "y2"], alt: "Écran simple à partir de docs/scenarios.md et textes provisoires dans un fichier séparé ; ajuster à l'arrivée des maquettes et des textes." },
+      { id: "f4", due: at(14, "22:00"), short: "carte des sites", txt: "Carte Leaflet : sites colorés selon leur score.",
+        needs: ["d5"], alt: `Lire ${FIX} (même format que la réponse de l'API, docs/contrats.md §5) ; basculer sur l'API quand /api/analyze répond.` },
+      { id: "f5", due: at(15, "00:00"), short: "fiche site", txt: "Fiche site : score global, score par critère, ce qui correspond ou non.",
+        needs: ["d5"], alt: `Même chose : développer sur ${FIX}.` },
+      { id: "f6", due: at(15, "10:00"), short: "formulaire mode 4", txt: "Formulaire du mode 4 : choix des paramètres, intervalles et poids.",
+        needs: ["y2"], alt: "Liste des paramètres tirée de docs/scenarios.md ; textes d'aide branchés plus tard." },
+    ] },
+  { id: "ouassim", name: "Ouassim", role: "Expertise métier (robotique, instruments) · données",
+    first: "Demander à Claude les spécifications des rovers lunaires, sources à l'appui.",
+    tasks: [
+      { id: "o1", due: at(14, "18:30"), short: "specs rovers lunaires", txt: "Avec Claude, trouver les spécifications des rovers lunaires (pente franchissable, températures) et noter chaque source." },
+      { id: "o2", due: at(14, "19:30"), short: "intervalles modes 1 et 2", txt: "Vérifier les intervalles des modes 1 et 2 dans docs/scenarios.md et proposer les corrections." },
+      { id: "o3", due: at(14, "21:00"), short: "data/candidates.json", txt: "Créer data/candidates.json : 7 sites de validation et 30 à 50 sites peu étudiés (format : docs/contrats.md §1)." },
+      { id: "o4", due: at(14, "22:00"), short: "profil lunaire", txt: "Établir le profil lunaire de référence avec David." },
+      { id: "o7", due: at(14, "23:30"), short: "classement attendu", txt: "Écrire le classement attendu par mode : quels sites doivent sortir en haut, lesquels en bas, et pourquoi." },
+      { id: "o5", due: at(15, "11:00"), short: "vérification des classements", txt: "Comparer les classements réels au classement attendu. Signaler les écarts à David.",
+        needs: ["d6"], alt: "Lancer l'API en local depuis main dès que /api/analyze est fusionné." },
+      { id: "o6", due: at(15, "11:00"), short: "3 sites coups de cœur", txt: "Choisir 3 sites peu étudiés « coups de cœur » pour la présentation de Xavier." },
+    ] },
+  { id: "yann", name: "Yann", role: "Expérience utilisateur · tests fonctionnels",
+    first: "Dessiner le parcours et les maquettes pour François avant 17 h 30.",
+    tasks: [
+      { id: "y1", due: at(14, "17:30"), short: "maquettes", txt: "Parcours utilisateur et maquettes (accueil, carte, fiche site, mode 4), remis à François." },
+      { id: "y2", due: at(14, "20:00"), short: "textes d'aide", txt: "Textes d'aide de chaque mode et de chaque paramètre, compréhensibles par le grand public." },
+      { id: "y3", due: at(14, "21:00"), short: "plan de test", txt: "Critères d'acceptation et plan de test dans docs/tests-fonctionnels.md." },
+      { id: "y4", due: at(14, "23:00"), short: "tests de la v0", txt: "Tester la v0 en ligne : une issue GitHub par anomalie.",
+        needs: ["d2"], alt: "Tester les écrans en local (npm run dev) avec les données d'exemple." },
+      { id: "y5", due: at(15, "12:00"), short: "feu vert du gel", txt: "Campagne de tests complète, nouveaux tests des correctifs, feu vert pour le gel.",
+        needs: ["d6"], alt: "Dérouler le plan de test sur la dernière version déployée, même incomplète." },
+    ] },
+  { id: "xavier", name: "Xavier", role: "Sécurité · présentation · soumission",
+    first: "Vérifier les exigences et l'heure limite de soumission Space Apps, et prévenir l'équipe.",
+    tasks: [
+      { id: "x1", due: at(14, "18:00"), short: "heure limite confirmée", txt: "Vérifier les exigences et l'heure limite de soumission Space Apps, prévenir l'équipe." },
+      { id: "x2", due: at(14, "20:00"), short: "revue sécurité du repo", txt: "Revue sécurité du repo : .gitignore, aucun secret dans l'historique, npm audit. Résultat dans docs/securite.md." },
+      { id: "x3", due: at(14, "23:00"), short: "plan de la présentation", txt: "Plan de la présentation avec Claude : le problème, les 4 modes, la démo, les sites trouvés, les limites, Mars en phase 2." },
+      { id: "x4", due: at(15, "10:00"), short: "contrôle du site en ligne", txt: "Vérifier le site en ligne : CORS, limitation de débit, en-têtes HTTP.",
+        needs: ["d2"], alt: "Relire en attendant la configuration CORS et la limitation de débit dans le code de l'API." },
+      { id: "x5", due: at(15, "12:00"), short: "script et vidéo de démo", txt: "Script de démo de 3 minutes et vidéo de secours.",
+        needs: ["f5", "o6"], alt: "Écrire le script sur les maquettes de Yann ; tourner la vidéo en dernier, sur la version de démo." },
+      { id: "x6", due: at(15, "13:00"), short: "soumission", txt: "Soumission Space Apps et répétition générale avec toute l'équipe." },
+    ] },
+];
+
+const TASKS = {};
+PEOPLE.forEach(p => p.tasks.forEach(t => { TASKS[t.id] = { ...t, owner: p }; }));
+const GIVES = {};
+PEOPLE.forEach(p => p.tasks.forEach(t => (t.needs || []).forEach(n => { (GIVES[n] = GIVES[n] || []).push(t.id); })));
+
+const DAYS = ["dim", "lun", "mar", "mer", "jeu", "ven", "sam"];
+function fmtDue(d) {
+  const local = new Date(d.getTime() + (new Date().getTimezoneOffset() - 300) * 60000);
+  const h = local.getHours(), m = local.getMinutes();
+  return `${DAYS[local.getDay()]} ${h} h${m ? " " + String(m).padStart(2, "0") : ""}`;
+}
+const label = id => `${TASKS[id].owner.name} · ${TASKS[id].short}`;
+
+const state = { done: {}, filter: "all", writable: true, db: null };
+try { const f = localStorage.getItem("plan-filter"); if (f) state.filter = f; } catch (e) {}
+
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text != null) e.textContent = text;
+  return e;
+}
+
+function renderTimeline() {
+  const now = Date.now();
+  const ol = document.getElementById("timeline");
+  ol.textContent = "";
+  MILESTONES.forEach((m, i) => {
+    const next = MILESTONES[i + 1];
+    const li = el("li");
+    const isNow = now >= m.start && (!next || now < next.start);
+    if (isNow) li.className = "now"; else if (next && now >= next.start) li.className = "past";
+    if (m.freeze && !isNow) li.classList.add("freeze");
+    li.append(el("span", "when mono", m.when), el("span", "what", m.what), el("span", "out", m.out));
+    ol.appendChild(li);
+  });
+}
+
+function renderRelay() {
+  const body = document.getElementById("relay");
+  body.textContent = "";
+  PEOPLE.forEach(p => p.tasks.forEach(t => {
+    const cross = (t.needs || []).filter(n => TASKS[n].owner.id !== p.id);
+    if (!cross.length) return;
+    const tr = el("tr");
+    const who = el("td");
+    who.append(el("span", "who", p.name), el("span", "what", t.short));
+    const what = el("td");
+    cross.forEach(n => what.append(el("span", "who", TASKS[n].owner.name), el("span", "what", TASKS[n].short)));
+    const due = el("td", "mono");
+    due.textContent = cross.map(n => fmtDue(TASKS[n].due)).join(" / ");
+    const st = el("td");
+    const ready = cross.every(n => state.done[n]);
+    st.appendChild(el("span", "pill " + (ready ? "free" : "wait"), ready ? "Livré" : "En attente"));
+    tr.append(who, what, due, st, el("td", "alt", t.alt || ""));
+    body.appendChild(tr);
+  }));
+}
+
+function renderFilters() {
+  const box = document.getElementById("filters");
+  box.textContent = "";
+  [{ id: "all", name: "Toute l'équipe" }, ...PEOPLE].forEach(p => {
+    const b = el("button", "chip", p.name);
+    b.type = "button"; b.id = "filter-" + p.id;
+    b.setAttribute("aria-pressed", String(state.filter === p.id));
+    b.addEventListener("click", () => {
+      state.filter = p.id;
+      try { localStorage.setItem("plan-filter", p.id); } catch (e) {}
+      renderFilters(); renderPeople();
+    });
+    box.appendChild(b);
+  });
+}
+
+function depRow(prefix, ids, cls) {
+  const row = el("span", "links-row");
+  row.appendChild(el("span", null, prefix));
+  ids.forEach(n => {
+    const ok = cls === "wait" && state.done[n];
+    row.appendChild(el("span", "pill " + (ok ? "free" : cls), label(n)));
+  });
+  return row;
+}
+
+function renderPeople() {
+  const now = Date.now();
+  const box = document.getElementById("people");
+  box.textContent = "";
+  PEOPLE.filter(p => state.filter === "all" || state.filter === p.id).forEach(p => {
+    const doneCount = p.tasks.filter(t => state.done[t.id]).length;
+    const card = el("article", "person");
+    const head = el("div", "person-head");
+    head.append(el("h3", null, p.name), el("span", "role", p.role));
+    const prog = el("div", "progress");
+    const bar = el("div", "bar"); const fill = el("span");
+    fill.style.width = (100 * doneCount / p.tasks.length) + "%";
+    bar.appendChild(fill);
+    prog.append(bar, el("span", "mono", `${doneCount}/${p.tasks.length}`));
+    const first = el("div", "first");
+    first.append(el("b", null, "Commencer par"), el("span", null, p.first));
+    const ul = el("ul", "tasks");
+    p.tasks.forEach(t => {
+      const done = !!state.done[t.id];
+      const li = el("li", "task" + (done ? " is-done" : ""));
+      const lab = el("label");
+      const input = el("input");
+      input.type = "checkbox"; input.id = "task-" + t.id;
+      input.checked = done; input.disabled = !state.writable;
+      input.addEventListener("change", () => toggle(t.id, input.checked));
+      const body = el("span", "body");
+      const due = el("span", "due mono", "avant " + fmtDue(t.due));
+      if (t.bonus) due.appendChild(el("span", "pill bonus", "Bonus"));
+      if (done) due.appendChild(el("span", "pill done", "Fait"));
+      else if (now > t.due && !t.bonus) due.appendChild(el("span", "pill late", "En retard"));
+      body.append(due, el("span", "txt", t.txt));
+      const cross = (t.needs || []).filter(n => TASKS[n].owner.id !== p.id);
+      if (cross.length) body.appendChild(depRow("Attend :", cross, "wait"));
+      const gives = (GIVES[t.id] || []).filter(n => TASKS[n].owner.id !== p.id);
+      if (gives.length) body.appendChild(depRow("Débloque :", gives, "give"));
+      if (cross.length && t.alt && !cross.every(n => state.done[n])) {
+        const alt = el("span", "alt");
+        alt.append(el("b", null, "Sans attendre : "), document.createTextNode(t.alt));
+        body.appendChild(alt);
+      } else if (!cross.length && t.alt) {
+        const alt = el("span", "alt");
+        alt.append(el("b", null, "Données : "), document.createTextNode(t.alt));
+        body.appendChild(alt);
+      }
+      lab.append(input, body);
+      li.appendChild(lab);
+      ul.appendChild(li);
+    });
+    card.append(head, prog, first, ul);
+    box.appendChild(card);
+  });
+}
+
+function renderAll() { renderTimeline(); renderRelay(); renderPeople(); }
+function setStatus(text) { document.getElementById("status").textContent = text; }
+
+async function toggle(id, done) {
+  state.done[id] = done;
+  renderRelay(); renderPeople();
+  if (!state.db) { setStatus("Avancement non enregistré : la sauvegarde n'est pas disponible ici."); return; }
+  try {
+    await state.db.doc("done/" + id).set({ done, at: Date.now() });
+  } catch (e) {
+    if (e && e.code === "invalid_argument") {
+      state.writable = false;
+      setStatus("Lecture seule : demandez un accès Contributeur pour cocher des tâches.");
+    } else {
+      setStatus("La coche n'a pas été enregistrée. Réessayez dans un instant.");
+    }
+    state.done[id] = !done;
+    renderRelay(); renderPeople();
+  }
+}
+
+async function connect() {
+  const db = window.claude && window.claude.use ? await window.claude.use("db") : null;
+  if (!db) { setStatus("Avancement partagé indisponible dans cette vue."); return; }
+  state.db = db;
+  let loaded = false;
+  const timer = setTimeout(() => { if (!loaded) setStatus("Avancement injoignable pour le moment, nouvel essai en cours…"); }, 10000);
+  db.collection("done").onSnapshot(snap => {
+    const next = {};
+    snap.docs.forEach(d => { const v = d.data(); if (v && v.done) next[d.id] = true; });
+    state.done = next;
+    if (!snap.metadata.fromCache) { loaded = true; clearTimeout(timer); setStatus("Avancement partagé avec l'équipe, en direct."); }
+    renderRelay(); renderPeople();
+  }, () => {
+    clearTimeout(timer);
+    setStatus("Avancement partagé indisponible. Rechargez la page plus tard.");
+  });
+}
+
+renderFilters();
+renderAll();
+setInterval(renderAll, 60000);
+connect();
+</script>

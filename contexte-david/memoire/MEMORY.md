@@ -1,0 +1,2 @@
+- [UX différenciante](ux-differenciante.md) — pas de site à tableaux : UI immersive et dynamique attendue
+- [Intégration à 20 h](integration-20h.md) — intégration pas encore faite (sam 22 h 55), ordre de fusion #38 → #50 → #49 → #48, deploy.sh attend, David fusionne
