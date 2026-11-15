@@ -17,7 +17,7 @@ Browser ──► Azure Static Web App (React)
 
 ```
 apps/api/         API (Express, ES modules), scoring engine, source connectors, openapi.yaml
-apps/web/         React + TypeScript + Vite + Tailwind + Leaflet
+apps/web/         React + TypeScript + Vite + Leaflet
 data/             candidates.json, candidates-precomputed.json, reference/moon-south-pole.json, fixtures/
 docs/             this documentation
 infra/terraform/  Azure infrastructure + deploy.sh

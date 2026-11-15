@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isVegetated, MODES, scoreCriterion, scoreSite, scoreValue, vegetationFactor, verdictFor, weightedTotal } from "../src/scoring/index.js";
+import { MODES, scoreCriterion, scoreSite, scoreValue, vegetationFactor, verdictFor, weightedTotal } from "../src/scoring/index.js";
 import type { Criterion } from "../src/scoring/index.js";
 
 const range: Criterion = { param: "slope_mean", min: 5, max: 15, tolerance: 10, weight: 1 };
@@ -90,17 +90,6 @@ describe("scoreSite", () => {
 
   it("keeps the criteria order", () => {
     expect(scoreSite({}, criteria).criteria.map((c) => c.param)).toEqual(["slope_mean", "wind"]);
-  });
-});
-
-describe("isVegetated", () => {
-  it("applies the 0.2 NDVI threshold (NASA Earth Observatory: ≤ 0.1 rock, sand or snow; 0.2 to 0.3 shrubs and grassland)", () => {
-    expect(isVegetated({ ndvi: 0.85 })).toBe(true);
-    expect(isVegetated({ ndvi: 0.2 })).toBe(false);
-    expect(isVegetated({ ndvi: 0.157 })).toBe(false); // Meteor Crater: sparsely vegetated desert, kept
-    expect(isVegetated({ ndvi: 0.24 })).toBe(true);
-    expect(isVegetated({ ndvi: null })).toBe(false);
-    expect(isVegetated({})).toBe(false);
   });
 });
 

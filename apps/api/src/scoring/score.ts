@@ -66,12 +66,6 @@ export function scoreSite(values: ParamValues, criteria: Criterion[]): SiteScore
   };
 }
 
-/** Common filter: true if the site is vegetated (NDVI known and > 0.2). */
-export function isVegetated(values: ParamValues): boolean {
-  const ndvi = values.ndvi;
-  return typeof ndvi === "number" && ndvi > NDVI_BARE_SOIL_MAX;
-}
-
 /**
  * Multiplier applied to the total of a vegetated site: 1 up to NDVI 0.2, linear decrease to 0 at NDVI 0.6.
  * A single-point NDVI can misrepresent a large site (ring lake, forested rim), so the filter degrades the score
