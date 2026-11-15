@@ -61,6 +61,23 @@ paths:
                   parameters:
                     type: array
                     items: { $ref: "#/components/schemas/ParameterInfo" }
+  /api/sources:
+    get:
+      tags: [Catalogue]
+      summary: Sources de données citées par l’application
+      description: Toutes les sources (Terre et Lune), avec l’organisme, l’adresse et la mention à reproduire. `valueSources` de `GET /api/sites/{id}` renvoie l’`id` de ces sources.
+      responses:
+        "200":
+          description: Catalogue des sources
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [sources]
+                properties:
+                  sources:
+                    type: array
+                    items: { $ref: "#/components/schemas/DataSource" }
   /api/reference/moon:
     get:
       tags: [Catalogue]
@@ -85,7 +102,7 @@ paths:
       summary: Classer les sites candidats pour un mode ou des critères libres
       description: |
         Envoyer soit `mode` (modes 1 à 3), soit `criteria` (mode 4), jamais les deux.
-        Le filtre « sol nu » (NDVI ≤ 0,1) est actif par défaut : un site végétalisé garde `total` 0, porte
+        Le filtre « sol nu » (NDVI ≤ 0,2) est actif par défaut : un site végétalisé garde `total` 0, porte
         `excluded: "vegetation"` et passe à la fin de la liste. Les autres sites sont triés par `total` décroissant.
       requestBody:
         required: true
@@ -256,7 +273,7 @@ components:
         bareSoilOnly:
           type: boolean
           default: true
-          description: Filtre « sol nu » (NDVI ≤ 0,1). Désactivable en mode 4.
+          description: Filtre « sol nu » (NDVI ≤ 0,2). Désactivable en mode 4.
       oneOf:
         - required: [mode]
         - required: [criteria]
@@ -293,7 +310,7 @@ components:
       allOf:
         - $ref: "#/components/schemas/AnalyzedSite"
         - type: object
-          required: [mode, values, sources]
+          required: [mode, values, sources, valueSources, moon]
           properties:
             terrain: { type: string }
             mode: { $ref: "#/components/schemas/ModeId" }
@@ -306,6 +323,34 @@ components:
             sources:
               type: array
               items: { type: string }
+            valueSources:
+              type: object
+              description: "Source de chaque valeur connue : id du catalogue `GET /api/sources` (ou `fixtures` en mode données d’exemple)."
+              additionalProperties: { type: string }
+            moon:
+              type: object
+              description: Référence lunaire (data/reference/moon-south-pole.json) de chaque paramètre sourcé, quel que soit le mode. Un paramètre sans référence est absent.
+              additionalProperties: { $ref: "#/components/schemas/MoonValue" }
+    MoonValue:
+      type: object
+      properties:
+        min: { type: number }
+        max: { type: number }
+        unit: { type: string }
+        source: { type: string }
+    DataSource:
+      type: object
+      required: [id, name, provider, url, body, params, terms]
+      properties:
+        id: { type: string, example: nasa-power }
+        name: { type: string }
+        provider: { type: string }
+        url: { type: string }
+        body: { type: string, enum: [earth, moon] }
+        params:
+          type: array
+          items: { $ref: "#/components/schemas/ParamId" }
+        terms: { type: string }
     Error:
       type: object
       required: [error]

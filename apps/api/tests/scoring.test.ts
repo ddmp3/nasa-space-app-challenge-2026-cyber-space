@@ -94,9 +94,11 @@ describe("scoreSite", () => {
 });
 
 describe("isVegetated", () => {
-  it("applique le seuil NDVI 0,1", () => {
+  it("applique le seuil NDVI 0,2 (NASA Earth Observatory : ≤ 0,1 roche, sable ou neige ; 0,2 à 0,3 arbustes et prairies)", () => {
     expect(isVegetated({ ndvi: 0.85 })).toBe(true);
-    expect(isVegetated({ ndvi: 0.1 })).toBe(false);
+    expect(isVegetated({ ndvi: 0.2 })).toBe(false);
+    expect(isVegetated({ ndvi: 0.157 })).toBe(false); // Meteor Crater : désert à végétation clairsemée, gardé
+    expect(isVegetated({ ndvi: 0.24 })).toBe(true);
     expect(isVegetated({ ndvi: null })).toBe(false);
     expect(isVegetated({})).toBe(false);
   });

@@ -1,0 +1,23 @@
+# Front statique (build Vite). API_ORIGIN est remplacé au démarrage du conteneur (gabarits de l image nginx officielle).
+server_tokens off;
+
+server {
+    listen 80;
+    root /usr/share/nginx/html;
+
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "DENY" always;
+    add_header Referrer-Policy "no-referrer" always;
+    add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.tile.openstreetmap.org; connect-src 'self' ${API_ORIGIN}; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'" always;
+
+    location /assets/ {
+        add_header Cache-Control "public, max-age=31536000, immutable";
+        add_header X-Content-Type-Options "nosniff" always;
+        try_files $uri =404;
+    }
+
+    location / {
+        try_files $uri /index.html;
+    }
+}

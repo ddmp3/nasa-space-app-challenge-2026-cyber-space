@@ -26,7 +26,9 @@ Seuls ces paramètres existent dans l'application : ce sont ceux que nos sources
 | `quake_count` | séismes M ≥ 2,5 à moins de 300 km depuis 2000 | nombre | USGS Earthquake Catalog | séismes lunaires faibles |
 | `volcano_distance` | distance au volcan holocène le plus proche | km | Smithsonian GVP | aucun volcanisme récent au pôle Sud (croûte des hautes terres) ; le basalte sert de substitut terrestre |
 
-**Filtre commun à tous les modes** : `ndvi ≤ 0,1` (sol nu). Les sites végétalisés sont exclus avant le calcul du score.
+**Filtre commun à tous les modes** : `ndvi ≤ 0,2` (sol nu). Les sites végétalisés sont exclus avant le calcul du score.
+
+> Seuil relevé de 0,1 à 0,2 le 15/11 après mesure (médiane annuelle 2024 du NDVI MODIS sur les 37 sites). À 0,1, le filtre écartait des déserts nus : Namib (0,116), Aorounga au Sahara (0,110), Harrat Khaybar (0,109), et deux terrains d'essai de la NASA, Black Point (0,151) et Meteor Crater (0,157). À 0,2, il écarte toujours l'Amazonie (0,867), la forêt boréale de Manicouagan (0,551), Wolfe Creek (0,325), Popigaï (0,241) et Gosses Bluff (0,240). Référence : NASA Earth Observatory, *Measuring Vegetation (NDVI & EVI)* : « des valeurs très faibles (0,1 et moins) correspondent à des zones de roche, de sable ou de neige ; des valeurs modérées (0,2 à 0,3) aux arbustes et prairies » (https://earthobservatory.nasa.gov/features/MeasuringVegetation/measuring_vegetation_2.php).
 
 ## Calcul du score
 
@@ -41,9 +43,9 @@ Objectif : tester sur Terre la mobilité d'un rover ou d'un robot avant son envo
 
 | Paramètre | Intervalle cible | Tolérance | Poids | Justification |
 |---|---|---|---|---|
-| `slope_mean` | 5 à 15° | 10° | 3 | terrain incliné comparable aux régions candidates du pôle Sud |
-| `slope_max` | 15 à 30° | 10° | 1 | permet de tester les limites de franchissement (à valider avec les spécifications des rovers lunaires) |
-| `roughness` | 5 à 40 m | 30 m | 2 | terrain accidenté, cratérisé |
+| `slope_mean` | 5 à 13° | 10° | 3 | intervalle interquartile mesuré au pôle Sud lunaire (LRO LOLA LDEM_85S_40M, 71 731 fenêtres de 1 km au sud de 85°S, même calcul que sur Terre : `tools/precompute/lunar_reference.py`). La proposition 3 à 10° (traversées d'Apollo 15 et 16, terrains équatoriaux plus doux) n'est pas retenue pour le pôle Sud |
+| `slope_max` | 15 à 30° | 10° | 1 | limites de franchissement des rovers : VIPER 15° (25 à 30° si nécessaire), LRV 25°, LTV 20° (vérification de Wassim) ; au pôle Sud, la pente max sur 1 km est de 14 à 23° pour la moitié des fenêtres (LOLA) |
+| `roughness` | 22 à 65 m | 30 m | 2 | intervalle interquartile de l'écart-type de l'altitude sur 1 km au pôle Sud lunaire (LOLA, même calcul que sur Terre) |
 | `precipitation` | ≤ 1 mm/j | 1 | 1 | sol sec et meuble, proche du régolithe |
 | `t2m_min` | ≤ -20 °C | 20 °C | 1 | test des composants au froid |
 | `lst_amplitude` | ≥ 20 °C | 15 °C | 1 | cycles thermiques |
@@ -84,7 +86,7 @@ Objectif : trouver des sites terrestres qui reproduisent les conditions rendant 
 
 - L'utilisateur choisit des paramètres dans le catalogue ci-dessus, puis fixe pour chacun l'intervalle, la tolérance et le poids.
 - Valeurs par défaut proposées : celles du mode le plus proche, sinon l'intervalle complet du paramètre.
-- Le filtre `ndvi ≤ 0,1` reste actif par défaut et peut être désactivé.
+- Le filtre `ndvi ≤ 0,2` reste actif par défaut et peut être désactivé.
 
 ## Candidats du MVP
 

@@ -13,7 +13,7 @@ Le bloc "precomputed" de chaque site reçoit :
     lst_day        moyenne des LST de jour (°C)
     lst_night      moyenne des LST de nuit (°C)
     lst_amplitude  moyenne de (jour - nuit) sur les compositions où les deux existent (°C)
-    ndvi           médiane du NDVI sur l'année (filtre « sol nu » : ndvi <= 0,1)
+    ndvi           médiane du NDVI sur l'année (filtre « sol nu » : ndvi <= 0,2)
 Une valeur introuvable reste null (jamais inventée) ; l'erreur est notée dans "modis_error".
 """
 from __future__ import annotations
@@ -33,6 +33,20 @@ NDVI_COLLECTION, NDVI_ASSET = "modis-13A1-061", "500m_16_days_NDVI"
 LST_SCALE, LST_VALID_MIN = 0.02, 7500        # 0 = valeur manquante ; plage valide 7500-65535
 NDVI_SCALE, NDVI_VALID = 0.0001, (-2000, 10000)  # -3000 = valeur manquante
 KEYS = ("ndvi", "lst_day", "lst_night", "lst_amplitude")
+# En dessous de ce nombre de compositions valides, la moyenne annuelle n'est pas représentative
+# (ex. : seules quelques compositions d'hiver polaire) : la valeur reste null.
+MIN_VALID = 6
+
+# Grille sinusoïdale MODIS (MODLAND) : tuiles de 1 111 950,5197 m, sphère de rayon 6 371 007,181 m.
+SIN_RADIUS, SIN_TILE, SIN_X0, SIN_Y0 = 6371007.181, 1111950.5197, 20015109.354, 10007554.677
+
+
+def sinusoidal_tile(lat: float, lon: float) -> tuple[int, int]:
+    """(h, v) de la tuile MODIS qui contient le point. Les emprises STAC des tuiles se chevauchent :
+    une recherche par point renvoie des tuiles voisines (le pixel lu tombe alors hors de l'image)."""
+    x = SIN_RADIUS * math.radians(lon) * math.cos(math.radians(lat))
+    y = SIN_RADIUS * math.radians(lat)
+    return int((x + SIN_X0) // SIN_TILE), int((SIN_Y0 - y) // SIN_TILE)
 
 
 # ----------------------------------------------------------------- conversions (pures, testées)
@@ -62,17 +76,19 @@ def pick_evenly(items: list, n: int) -> list:
     return [items[int(i * step)] for i in range(n)]
 
 
-def aggregate(lst_pairs: list[tuple[float | None, float | None]], ndvi: list[float | None]) -> dict:
+def aggregate(lst_pairs: list[tuple[float | None, float | None]], ndvi: list[float | None],
+              min_valid: int = MIN_VALID) -> dict:
     """lst_pairs : (jour, nuit) en °C par composition ; ndvi : valeurs par composition."""
     day = [d for d, _ in lst_pairs if d is not None]
     night = [n for _, n in lst_pairs if n is not None]
     amp = [d - n for d, n in lst_pairs if d is not None and n is not None]
     veg = [v for v in ndvi if v is not None]
+    enough = lambda values: len(values) >= min_valid  # noqa: E731
     return {
-        "lst_day": round(statistics.fmean(day), 2) if day else None,
-        "lst_night": round(statistics.fmean(night), 2) if night else None,
-        "lst_amplitude": round(statistics.fmean(amp), 2) if amp else None,
-        "ndvi": round(statistics.median(veg), 3) if veg else None,
+        "lst_day": round(statistics.fmean(day), 2) if enough(day) else None,
+        "lst_night": round(statistics.fmean(night), 2) if enough(night) else None,
+        "lst_amplitude": round(statistics.fmean(amp), 2) if enough(amp) else None,
+        "ndvi": round(statistics.median(veg), 3) if enough(veg) else None,
         "modis_samples": {"lst": len(lst_pairs), "lst_valid_pairs": len(amp), "ndvi": len(ndvi), "ndvi_valid": len(veg)},
     }
 
@@ -110,8 +126,9 @@ class PlanetaryComputer:
 
         if self._catalog is None:
             self._catalog = self._retry(lambda: pystac_client.Client.open(STAC_URL, modifier=planetary_computer.sign_inplace))
-        point = {"type": "Point", "coordinates": [lon, lat]}
-        return self._retry(lambda: list(self._catalog.search(collections=[collection], intersects=point,
+        h, v = sinusoidal_tile(lat, lon)
+        tile = {"modis:horizontal-tile": {"eq": h}, "modis:vertical-tile": {"eq": v}}
+        return self._retry(lambda: list(self._catalog.search(collections=[collection], query=tile,
                                                              datetime=f"{start}/{end}").items()))
 
     def sample(self, href: str, lat: float, lon: float) -> float | None:

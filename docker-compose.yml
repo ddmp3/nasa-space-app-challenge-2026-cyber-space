@@ -18,6 +18,8 @@ services:
       dockerfile: apps/web/Dockerfile
       args:
         VITE_API_URL: http://localhost:3001
+    environment:
+      API_ORIGIN: http://localhost:3001
     ports:
       - "8080:80"
     depends_on:

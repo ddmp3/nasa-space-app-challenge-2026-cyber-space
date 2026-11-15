@@ -77,3 +77,25 @@ Accès testé le 2026-11-14 par requêtes GET. « Vérifié » signifie que l'en
 
 - Le SAR (Mini-RF contre Sentinel-1/RCM) n'est pas directement comparable : longueurs d'onde et polarisations différentes. Bonus uniquement.
 - Aucun site terrestre n'approche les températures des zones en ombre permanente (environ 25 à 110 K) : le critère de température compare des **tendances** (froid extrême, forte amplitude), pas des valeurs absolues.
+
+## Utilisées dans le MVP (état au 15 novembre)
+
+Le catalogue exact, avec la mention à reproduire pour chaque source, est servi par `GET /api/sources` (`apps/api/src/sources/catalog.ts`).
+
+| Source | Paramètres | Accès dans l’application |
+|---|---|---|
+| NASA POWER | `t2m_*`, `wind`, `humidity`, `precipitation`, `solar` | API en direct, cache mémoire |
+| USGS Earthquake Catalog | `quake_count` | API en direct, cache mémoire |
+| Smithsonian GVP | `volcano_distance` | Liste des volcans holocènes chargée une fois, distance calculée localement |
+| Copernicus DEM GLO-30 | `elevation`, `slope_mean`, `slope_max`, `roughness` | Précalculé (`tools/precompute/enrich_candidates.py`), fenêtres de 1 km |
+| MODIS MOD11A2/MYD11A2, MOD13A1/MYD13A1 (v6.1) | `lst_*`, `ndvi` | Précalculé (`tools/precompute/modis_values.py`) : moyennes 2024 sur la tuile sinusoïdale qui contient le site, au moins 6 compositions valides |
+| LRO LOLA LDEM_85S_40M | pente et rugosité lunaires | Précalculé (`tools/precompute/lunar_reference.py`) : intervalle interquartile de 71 731 fenêtres de 1 km au sud de 85°S |
+| LRO Diviner, NASA Moon Fact Sheet | froid des zones d’ombre, gravité, pression | Valeurs publiées citées dans `data/reference/moon-south-pole.json` |
+
+## Données canadiennes (accord de l’équipe pour leur usage)
+
+Pistes relevées par Wassim ([verification-modes-1-2.md](verification-modes-1-2.md), section 8), pas encore intégrées au moteur :
+
+- **RADARSAT-1** (archive ouverte depuis 2019) et **RCM** (produits archivés ouverts via EODMS de RNCan, licence du gouvernement ouvert) : radar à synthèse d’ouverture, voit à travers les nuages et la nuit polaire. Comparaison possible avec LRO Mini-RF sur un ou deux sites, sans l’intégrer au score (longueurs d’onde différentes).
+- **Réseau d’analogues de l’ASC (CARN)** : station HMP (Haughton), station McGill (île Axel Heiberg) ; missions à Mistastin depuis 2010 ; cratère Tunnunik (programme SOAR). Ces sites sont dans `data/candidates.json`.
+- **Jeu de données de navigation de rover de l’île Devon** (Université de Toronto, subvention CARN) : données réelles de conduite pour valider les intervalles de pente et de rugosité du mode 1.

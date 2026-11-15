@@ -37,6 +37,14 @@ def tile_url(lat: float, lon: float) -> str:
     return f"{BASE_URL}/{name}/{name}.tif"
 
 
+def point_tile_url(lat: float, lon: float) -> str:
+    """Tile a ouvrir para el punto. Una latitud entera (p. ej. 25.0) es el borde inferior del tile N25,
+    fuera de su raster (fila = altura) : se usa el tile de abajo (N24), cuyo borde superior la contiene."""
+    if lat == math.floor(lat) and lat > -90:
+        lat -= 1e-9
+    return tile_url(lat, lon)
+
+
 def slope_deg(z: np.ndarray, dx_m: float, dy_m: float) -> np.ndarray:
     """Pendiente en grados por diferencias centradas. Los NaN se propagan."""
     gy = np.gradient(z, dy_m, axis=0)
@@ -78,7 +86,7 @@ def point_geometry(lat: float, lon: float, window_m: float = 1000.0, url: str | 
 
     if not (-90 <= lat <= 90 and -180 <= lon <= 180):
         raise ValueError("lat/lon fuera de rango")
-    src_url = url or tile_url(lat, lon)
+    src_url = url or point_tile_url(lat, lon)
     try:
         src = rasterio.open(src_url)
     except RasterioIOError as e:

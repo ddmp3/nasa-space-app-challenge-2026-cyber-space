@@ -40,8 +40,11 @@ az containerapp update --name "$APP_NAME" --resource-group "$RG" --image "$IMAGE
 cd "$ROOT_DIR/apps/web"
 npm ci
 VITE_API_URL="$API_URL" npm run build
+# En-têtes de sécurité du front (même politique que apps/web/nginx en local), avec l'origine réelle de l'API.
+sed "s#__API_ORIGIN__#$API_URL#" staticwebapp.config.template.json > dist/staticwebapp.config.json
 SWA_TOKEN=$(terraform -chdir="$TF_DIR" output -raw web_deployment_token)
-npx --yes @azure/static-web-apps-cli deploy ./dist --deployment-token "$SWA_TOKEN" --env production
+npx --yes @azure/static-web-apps-cli@2.0.10 deploy ./dist --deployment-token "$SWA_TOKEN" --env production
 
 echo "API : $API_URL"
 echo "Web : $WEB_URL"
+echo "Vérifier : python3 tools/validation/e2e.py --web $WEB_URL --api $API_URL"

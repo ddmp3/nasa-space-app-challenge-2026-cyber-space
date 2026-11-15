@@ -18,9 +18,11 @@ export const MODES: Record<ModeId, Mode> = {
     id: "robotics",
     name: "Validation robotique",
     criteria: [
-      { param: "slope_mean", min: 5, max: 15, tolerance: 10, weight: 3 },
+      // Pente moyenne et rugosité : intervalle interquartile du pôle Sud lunaire (LRO LOLA, fenêtres de 1 km,
+      // tools/precompute/lunar_reference.py). Pente max : limites des rovers (docs/verification-modes-1-2.md).
+      { param: "slope_mean", min: 5, max: 13, tolerance: 10, weight: 3 },
       { param: "slope_max", min: 15, max: 30, tolerance: 10, weight: 1 },
-      { param: "roughness", min: 5, max: 40, tolerance: 30, weight: 2 },
+      { param: "roughness", min: 22, max: 65, tolerance: 30, weight: 2 },
       { param: "precipitation", max: 1, tolerance: 1, weight: 1 },
       { param: "t2m_min", max: -20, tolerance: 20, weight: 1 },
       { param: "lst_amplitude", min: 20, tolerance: 15, weight: 1 },

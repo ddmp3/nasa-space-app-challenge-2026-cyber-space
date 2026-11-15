@@ -10,5 +10,8 @@ COPY apps/web ./
 RUN VITE_API_URL="$VITE_API_URL" npm run build
 
 FROM nginx:1.27-alpine
+# Origine de l API autorisée par la politique de sécurité du contenu (connect-src).
+ENV API_ORIGIN=http://localhost:3001
+COPY apps/web/nginx/default.conf.template /etc/nginx/templates/default.conf.template
 COPY --from=build /repo/apps/web/dist /usr/share/nginx/html
 EXPOSE 80

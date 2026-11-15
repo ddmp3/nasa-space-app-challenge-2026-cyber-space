@@ -4,7 +4,7 @@ export const MATCH_THRESHOLD = 0.7;
 export const PARTIAL_THRESHOLD = 0.4;
 
 /** Seuil du filtre commun « sol nu » (docs/scenarios.md). */
-export const NDVI_BARE_SOIL_MAX = 0.1;
+export const NDVI_BARE_SOIL_MAX = 0.2;
 
 /**
  * Score d'une valeur pour un critère : 1 dans l'intervalle [min, max],
@@ -53,7 +53,7 @@ export function scoreSite(values: ParamValues, criteria: Criterion[]): SiteScore
   return { total, criteria: scored };
 }
 
-/** Filtre commun : vrai si le site est végétalisé (NDVI connu et > 0,1). */
+/** Filtre commun : vrai si le site est végétalisé (NDVI connu et > 0,2). */
 export function isVegetated(values: ParamValues): boolean {
   const ndvi = values.ndvi;
   return typeof ndvi === "number" && ndvi > NDVI_BARE_SOIL_MAX;

@@ -1,5 +1,17 @@
 # 🛰️ Cyber&Space Montréal — NASA Space Apps Challenge 2026
 
+## In English
+
+**Challenge:** [Permanent Moon Base Locations and Mars](https://www.spaceappschallenge.org/2026/challenges/permanent-moon-base-locations-and-mars/).
+
+A web application that ranks Earth sites as analogs of the lunar south pole for a chosen mission: rover mobility testing, instrument calibration, self-sufficient colony, or free criteria. Each site is scored criterion by criterion with open data (NASA POWER, MODIS, Copernicus DEM, USGS, Smithsonian GVP) against lunar reference values (LRO LOLA slope and roughness computed with the same 1 km method as on Earth, LRO Diviner). Every site card shows what matches, what does not, the lunar value next to the Earth value, the source of each number, and what Earth cannot reproduce (gravity, vacuum, radiation).
+
+Run it locally (Docker): `docker compose up --build`, then open http://localhost:8080 (API and docs: http://localhost:3001/api/docs). End-to-end tests: `python3 tools/validation/e2e.py`.
+
+Data sources and terms: `GET /api/sources` and [docs/sources.md](docs/sources.md). Validation against known analogs: [docs/validation-classements.md](docs/validation-classements.md).
+
+**Use of AI:** parts of the code, data processing scripts, tests and documentation were written with the help of Claude (Anthropic) and Microsoft Copilot, under the team's direction; commits made with Claude carry a `Co-Authored-By: Claude` trailer. The project documentation below is in French.
+
 ## 🌍 Le défi
 
 **Identifier sur Terre des sites analogues aux futures bases permanentes sur la Lune et sur Mars.**
@@ -53,9 +65,10 @@ Pour chaque site proposé, l'application affiche :
 
 ## ✅ Validation
 
-- Les analogues reconnus doivent obtenir un score élevé : Atacama, Dry Valleys, cratère Haughton, Mauna Kea, Svalbard, Islande.
-- Un témoin négatif (Amazonie) doit obtenir un score bas.
+- Chaque analogue reconnu (Atacama, Dry Valleys, Haughton, Mauna Kea, Svalbard, Holuhraun, Meteor Crater, Black Point) doit sortir dans la moitié haute **des modes pour lesquels il est réellement utilisé** (champ `known_for` de `data/candidates.json`).
+- Le témoin négatif (Amazonie) est écarté ou dernier dans tous les modes.
 - Les meilleurs sites **hors** de cette liste sont mis en avant comme sites peu étudiés.
+- Résultat et méthode : **[docs/validation-classements.md](docs/validation-classements.md)** ; tests : **[docs/tests-fonctionnels.md](docs/tests-fonctionnels.md)**.
 
 ## 📡 Sources de données
 
@@ -63,8 +76,9 @@ Liste complète, modes d'accès et statut de test : **[docs/sources.md](docs/sou
 
 Principes retenus :
 
-- **Aucune base de données** : les valeurs sont lues par API (REST, STAC, WMTS, lecture partielle de COG) et gardées seulement en cache mémoire dans l'API.
-- **Profil de référence lunaire** : établi une seule fois et livré sous forme d'un fichier JSON versionné (paramètres, pas jeu de données).
+- **Aucune base de données** : NASA POWER, USGS et Smithsonian GVP sont lus en direct par l'API (cache mémoire) ; le relief (Copernicus DEM) et MODIS sont précalculés hors ligne dans `data/candidates-precomputed.json` (`tools/precompute/`).
+- **Profil de référence lunaire** : `data/reference/moon-south-pole.json`, dont la pente et la rugosité calculées à partir de LRO LOLA avec la même méthode que sur Terre (`tools/precompute/lunar_reference.py`).
+- **Toutes les sources sont nommées** : catalogue servi par `GET /api/sources`, source de chaque valeur dans la fiche du site.
 - **Socle sans authentification** : toutes les sources du MVP sont accessibles sans compte. Aucun secret ne doit être commité.
 
 ## ⚠️ Limites de l'analogie terrestre

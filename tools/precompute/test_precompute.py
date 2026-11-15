@@ -13,10 +13,46 @@ import modis_values as mv  # noqa: E402
 import point_geometry as pg  # noqa: E402
 
 
+# ------------------------------------------------------------------ lunar_reference
+def test_lunar_latitude_grid():
+    import lunar_reference as lr
+    lat = lr.latitude_grid(7584, 40.0)
+    assert lat[3791, 3791] < -89.99                               # centre = pôle Sud
+    assert lat[3791, 0] == pytest.approx(-85.0, abs=0.01)         # bord de la grille LDEM_85S = 85°S
+
+
+def test_lunar_window_stats_on_inclined_plane():
+    import lunar_reference as lr
+    x = np.arange(100) * 40.0
+    z = np.tile(x * math.tan(math.radians(10)), (100, 1))         # plan incliné à 10°
+    st = lr.window_stats(z, 40.0, 1000.0)
+    assert st["window_px"] == 25 and st["slope_mean"].size == 16
+    assert np.allclose(st["slope_mean"], 10, atol=0.01) and np.allclose(st["slope_max"], 10, atol=0.01)
+    mask = np.zeros((100, 100), dtype=bool)
+    mask[:25, :25] = True
+    assert lr.window_stats(z, 40.0, 1000.0, mask)["slope_mean"].size == 1
+
+
+def test_lunar_apply_to_profile():
+    import lunar_reference as lr
+    d = {f"p{p}": float(p) for p in lr.PERCENTILES}
+    prof = lr.apply_to_profile({"params": {"wind": {"min": 0}}, "todo": ["slope_mean, slope_max, roughness : LOLA", "solar"]},
+                               {"windows": 9, "window_m": 1000.0, "slope_mean": d, "slope_max": d, "roughness": d})
+    assert prof["params"]["slope_mean"]["min"] == 25.0 and prof["params"]["slope_mean"]["max"] == 75.0
+    assert prof["params"]["wind"] == {"min": 0} and prof["todo"] == ["solar"]
+
+
 # ------------------------------------------------------------------ point_geometry
 def test_tile_names():
     assert pg.tile_name(-24.1, -70.0) == "Copernicus_DSM_COG_10_S25_00_W070_00_DEM"
     assert pg.tile_name(78.2, 15.6) == "Copernicus_DSM_COG_10_N78_00_E015_00_DEM"
+
+
+def test_point_tile_on_integer_latitude():
+    # 25,0°N est le bord supérieur du tile N24 (le tile N25 ne le contient pas : échec observé à Harrat Khaybar).
+    assert "N24_00_E039" in pg.point_tile_url(25.0, 39.92)
+    assert "S25_00_W070" in pg.point_tile_url(-24.0, -69.5)
+    assert "N25_00_E039" in pg.point_tile_url(25.1, 39.92)
 
 
 def test_geometry_on_inclined_plane():
@@ -63,8 +99,25 @@ def test_ndvi_conversion():
     assert abs(mv.ndvi_value(8500) - 0.85) < 1e-9 and abs(mv.ndvi_value(-500) + 0.05) < 1e-9
 
 
+def test_sinusoidal_tile():
+    # Tuiles MODIS connues : Atacama h11v11 ; Haughton h15v01 (STAC renvoie aussi h14 et h16) ;
+    # Changtang h25v05 (STAC ne renvoie que h24v05 pour une recherche par point).
+    assert mv.sinusoidal_tile(-24.5, -69.25) == (11, 11)
+    assert mv.sinusoidal_tile(75.38, -89.67) == (15, 1)
+    assert mv.sinusoidal_tile(34.5, 85.0) == (25, 5)
+    assert mv.sinusoidal_tile(0.5, 0.5) == (18, 8)    # juste au nord-est de (0°, 0°), coin des tuiles h17/h18 v8/v9
+
+
+def test_aggregate_needs_enough_valid_values():
+    # 2 compositions valides sur 12 (hiver polaire) : pas de moyenne annuelle.
+    pairs = [(-40.0, -42.0), (-41.0, -43.0)] + [(None, None)] * 10
+    r = mv.aggregate(pairs, [0.05] * 5)
+    assert all(r[k] is None for k in mv.KEYS)
+    assert mv.aggregate(pairs, [0.05] * 5, min_valid=2)["lst_day"] == -40.5
+
+
 def test_aggregate():
-    r = mv.aggregate([(30.0, 10.0), (20.0, None), (None, 0.0), (40.0, 20.0)], [0.02, None, 0.04, 0.9])
+    r = mv.aggregate([(30.0, 10.0), (20.0, None), (None, 0.0), (40.0, 20.0)], [0.02, None, 0.04, 0.9], min_valid=1)
     assert r["lst_day"] == 30.0 and r["lst_night"] == 10.0
     assert r["lst_amplitude"] == 20.0          # (20 + 20) / 2, seulement les paires complètes
     assert r["ndvi"] == 0.04                    # médiane de 0.02, 0.04, 0.9

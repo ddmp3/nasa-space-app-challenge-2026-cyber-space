@@ -19,6 +19,7 @@ async function main(): Promise<void> {
     sites,
     connectors: sources.connectors,
     sourceNames: sources.names,
+    useFixtures: config.useFixtures,
     openapi: await loadOpenApi(),
     moonReference: await loadMoonReference(config.dataDir),
     allowedOrigins: config.allowedOrigins,

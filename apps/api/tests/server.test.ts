@@ -3,7 +3,8 @@ import type { Server } from "node:http";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { parse } from "yaml";
-import { readFile } from "node:fs/promises";
+import { copyFile, mkdir, mkdtemp, readFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { createFixtureConnector, loadFixtures } from "../src/analyze/fixtures.js";
 import type { Connector } from "../src/analyze/analyze.js";
 import { createApp } from "../src/server/app.js";
@@ -81,7 +82,7 @@ describe("serveur HTTP", () => {
     const body = (await res.json()) as { mode: string; sites: { id: string; total: number; excluded?: string; criteria: { param: string; value: number | null; score: number; verdict: string }[] }[] };
     expect(body.mode).toBe("robotics");
     expect(body.sites.map((s) => s.id)).toEqual(["atacama", "haughton", "amazonie"]);
-    expect(body.sites.map((s) => s.total)).toEqual([93, 90, 0]);
+    expect(body.sites.map((s) => s.total)).toEqual([93, 87, 0]);
     expect(body.sites[2]?.excluded).toBe("vegetation");
     for (const s of body.sites) {
       expect(Object.keys(s).filter((k) => k !== "excluded")).toEqual(["id", "name", "lat", "lon", "role", "criteria", "total"].sort((a, b) => Object.keys(s).indexOf(a) - Object.keys(s).indexOf(b)));
@@ -137,8 +138,44 @@ describe("serveur HTTP", () => {
     const res = await fetch(`${api.url}/api/sites/haughton?mode=robotics`);
     expect(res.status).toBe(200);
     const body = (await res.json()) as { id: string; total: number; mode: string; values: Record<string, number>; sources: string[]; terrain?: string };
-    expect(body).toMatchObject({ id: "haughton", total: 90, mode: "robotics", sources: ["fixtures"], terrain: "impact" });
+    expect(body).toMatchObject({ id: "haughton", total: 87, mode: "robotics", sources: ["fixtures"], terrain: "impact" });
     expect(body.values.t2m_min).toBe(-48.55);
+  });
+
+  it("GET /api/sites/{id} : source de chaque valeur et référence lunaire des critères du mode", async () => {
+    const moon = {
+      params: {
+        slope_mean: { min: 5.23, max: 12.89, unit: "°", source: "LOLA" },
+        wind: { min: 0, max: 0, unit: "m/s", source: "pas d'atmosphère" },
+        roughness: { unit: "m", source: "sans valeur" },
+      },
+    };
+    const real = await start({ moonReference: moon, useFixtures: false });
+    const body = (await (await fetch(`${real.url}/api/sites/haughton?mode=robotics`)).json()) as {
+      valueSources: Record<string, string>;
+      moon: Record<string, unknown>;
+    };
+    expect(body.valueSources).toMatchObject({ t2m_min: "nasa-power", slope_mean: "copernicus-dem", quake_count: "usgs-comcat" });
+    // Tous les paramètres sourcés, quel que soit le mode (le front affiche ceux de ses critères) ; roughness n'a pas de valeur.
+    expect(body.moon).toEqual({
+      slope_mean: { min: 5.23, max: 12.89, unit: "°", source: "LOLA" },
+      wind: { min: 0, max: 0, unit: "m/s", source: "pas d'atmosphère" },
+    });
+    await real.close();
+    const fixtures = await start({ useFixtures: true });
+    const fx = (await (await fetch(`${fixtures.url}/api/sites/haughton`)).json()) as { valueSources: Record<string, string> };
+    expect(fx.valueSources.t2m_min).toBe("fixtures");
+    await fixtures.close();
+  });
+
+  it("GET /api/sources : chaque paramètre du catalogue a une source terrestre nommée", async () => {
+    const { sources } = (await (await fetch(`${api.url}/api/sources`)).json()) as {
+      sources: { id: string; name: string; url: string; body: string; params: string[]; terms: string }[];
+    };
+    const earth = sources.filter((s) => s.body === "earth").flatMap((s) => s.params);
+    expect([...earth].sort()).toEqual([...PARAM_IDS].sort());
+    expect(new Set(earth).size).toBe(earth.length); // une seule source par paramètre
+    for (const s of sources) expect(s.name && s.url.startsWith("https://") && s.terms).toBeTruthy();
   });
 
   it("GET /api/sites/{id} : Amazonie écartée ; 404 site inconnu ; 400 mode inconnu", async () => {
@@ -183,7 +220,7 @@ describe("serveur HTTP", () => {
 describe("contrat openapi.yaml ↔ réponses réelles", () => {
   it("les chemins décrits sont exactement ceux que le serveur expose", async () => {
     const spec = parse(await readFile(path.join(API_ROOT, "openapi.yaml"), "utf8")) as { paths: Record<string, Record<string, unknown>> };
-    expect(Object.keys(spec.paths).sort()).toEqual(["/api/analyze", "/api/health", "/api/modes", "/api/parameters", "/api/reference/moon", "/api/sites/{id}"]);
+    expect(Object.keys(spec.paths).sort()).toEqual(["/api/analyze", "/api/health", "/api/modes", "/api/parameters", "/api/reference/moon", "/api/sites/{id}", "/api/sources"]);
     expect(Object.keys(spec.paths["/api/analyze"] ?? {})).toEqual(["post"]);
   });
 
@@ -218,8 +255,21 @@ describe("chargement des sites", () => {
 
   it("loadSites se rabat sur les fixtures quand candidates.json est absent", async () => {
     const notes: string[] = [];
-    const sites = await loadSites(DATA, (n) => notes.push(n));
+    const dir = await mkdtemp(path.join(tmpdir(), "cyberspace-data-"));
+    await mkdir(path.join(dir, "fixtures"));
+    await copyFile(path.join(DATA, "fixtures", "site-values.json"), path.join(dir, "fixtures", "site-values.json"));
+    const sites = await loadSites(dir, (n) => notes.push(n));
     expect(sites.map((s) => s.id)).toEqual(["haughton", "atacama", "amazonie"]);
     expect(notes[0]).toContain("candidates.json absent");
+    await rm(dir, { recursive: true });
+  });
+
+  it("data/candidates.json du dépôt : tous les sites sont valides, avec un témoin négatif", async () => {
+    const notes: string[] = [];
+    const sites = await loadSites(DATA, (n) => notes.push(n));
+    expect(notes).toEqual([]);
+    expect(sites.length).toBeGreaterThanOrEqual(30);
+    expect(sites.some((s) => s.role === "negative")).toBe(true);
+    expect(sites.filter((s) => s.role === "validation").length).toBeGreaterThanOrEqual(7);
   });
 });

@@ -5,7 +5,7 @@ import type { Criterion, ModeId, ParamId } from "../scoring/index.js";
 export type AnalyzeRequest = {
   mode?: ModeId;
   criteria?: Criterion[];
-  /** Filtre « sol nu » (NDVI ≤ 0,1) ; actif par défaut, désactivable en mode 4. */
+  /** Filtre « sol nu » (NDVI ≤ 0,2) ; actif par défaut, désactivable en mode 4. */
   bareSoilOnly?: boolean;
 };
 

@@ -6,12 +6,16 @@ import swaggerUi from "swagger-ui-express";
 import { analyze, collectValues } from "../analyze/analyze.js";
 import type { AnalyzeDeps } from "../analyze/analyze.js";
 import { ValidationError } from "../analyze/validate.js";
-import { MODES, isModeId, isVegetated, scoreSite } from "../scoring/index.js";
+import { moonValues } from "../analyze/moon.js";
+import { MODES, PARAM_IDS, isModeId, isVegetated, scoreSite } from "../scoring/index.js";
+import { SOURCES, valueSources } from "../sources/catalog.js";
 import { PARAMETERS } from "./parameters.js";
 
 export type AppDeps = AnalyzeDeps & {
   /** Noms des sources branchées, renvoyés par GET /api/sites/{id}. */
   sourceNames: string[];
+  /** Vrai si les valeurs viennent des données d'exemple (USE_FIXTURES) : les sources par valeur le disent. */
+  useFixtures?: boolean;
   /** Contrat OpenAPI déjà parsé (servi sur /api/docs et /api/openapi.json). */
   openapi: Record<string, unknown>;
   /** data/reference/moon-south-pole.json, si présent. */
@@ -69,6 +73,10 @@ export function createApp(deps: AppDeps): express.Express {
     res.json({ parameters: PARAMETERS });
   });
 
+  app.get("/api/sources", (_req, res) => {
+    res.json({ sources: SOURCES });
+  });
+
   app.get("/api/reference/moon", (_req, res) => {
     if (deps.moonReference === undefined) {
       res.status(404).json({ error: "Profil lunaire de référence indisponible" });
@@ -118,6 +126,8 @@ export function createApp(deps: AppDeps): express.Express {
         ...(excluded ? { excluded: "vegetation" } : {}),
         values,
         sources: deps.sourceNames,
+        valueSources: valueSources(values, deps.useFixtures),
+        moon: moonValues(deps.moonReference, PARAM_IDS),
       });
     } catch (error) {
       log(`GET /api/sites/${site.id} a échoué`, error);

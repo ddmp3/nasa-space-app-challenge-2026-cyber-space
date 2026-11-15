@@ -1,143 +1,136 @@
 # Plan projet — MVP Terre ↔ Lune (week-end du 14-15 novembre 2026)
 
 > **Version à suivre pendant le week-end : https://claude.ai/artifact/L14HHuEdPnAwuw5RFp7moJ** (une colonne par personne, tâches à cocher, avancement partagé en direct).
+>
+> Mise à jour : dimanche 15 novembre, 1 h 30 (Montréal).
 
 ## Objectif du week-end
 
-Une application web **déployée sur Azure** où l'on choisit un des 4 modes et où l'on obtient sur une carte les sites terrestres classés, avec pour chacun un score global, un score par critère et ce qui correspond ou non. Plus une présentation et une soumission Space Apps complètes.
+Une application web **déployée sur Azure** où l'on choisit un des 4 modes et où l'on obtient sur une carte les sites terrestres classés, avec pour chacun un score global, un score par critère et ce qui correspond ou non. Plus une présentation et une soumission Space Apps complètes, **en anglais**.
 
 **Règle d'or : un projet simple et fini bat un projet ambitieux à moitié fait.** Mars, le SAR, EMIT et la grille mondiale sont hors MVP.
 
+## Échéances officielles
+
+- **Soumission : dimanche 15 novembre, 23 h 59, heure de Montréal.** Rien n'est soumis pour l'instant (décision de David).
+- Tout en anglais : page de projet et éléments liés. Démo : vidéo de 30 s au plus **ou** 7 diapositives au plus. Détails : [soumission.md](soumission.md).
+
 ## Définition de « terminé » (MVP)
 
-- [ ] Les 4 modes fonctionnent de bout en bout sur le site déployé.
-- [ ] Au moins 4 sources réelles branchées : NASA POWER, Copernicus DEM, MODIS (LST + NDVI), USGS séismes.
-- [ ] Les analogues connus sortent dans le haut du classement, l'Amazonie en bas.
-- [ ] Au moins 3 sites peu étudiés mis en avant, avec leur fiche.
-- [ ] Contrat OpenAPI publié (`/api/docs`).
-- [ ] Présentation, démo et soumission prêtes.
+- [ ] Les 4 modes fonctionnent de bout en bout sur le site **déployé**. *Fait en local (docker compose, tests TF-04 à TF-07) ; reste le déploiement.*
+- [x] Au moins 4 sources réelles branchées : NASA POWER, Copernicus DEM, MODIS (LST + NDVI), USGS séismes, plus Smithsonian GVP. Côté Lune : LRO LOLA (calculé), Diviner (publié).
+- [x] Les analogues connus sortent dans le haut des modes où ils sont utilisés, l'Amazonie est écartée : 9 attentes tenues sur 11 ([validation-classements.md](validation-classements.md)).
+- [x] Au moins 3 sites peu étudiés mis en avant, avec leur fiche : Tunnunik, Mistastin, Atakor (proposition, à confirmer par Wassim).
+- [x] Contrat OpenAPI publié (`/api/docs`).
+- [x] Toutes les sources nommées : `GET /api/sources`, source de chaque valeur dans la fiche.
+- [ ] Interface, dépôt, page de projet et démo en anglais.
+- [ ] Présentation, démo et soumission prêtes (brouillons : [presentation.md](presentation.md), [soumission.md](soumission.md)).
 
-## Calendrier
+## Calendrier (dimanche)
 
 | Quand | Étape | Livrable |
 |---|---|---|
-| Sam 15 h – 16 h | **Lancement** : lecture du README et de `docs/scenarios.md`, attribution des tâches | Tout le monde sait quoi faire |
-| Sam 16 h – 17 h 30 | **Contrats** : OpenAPI (Jesus + François), maquettes (Yann), squelettes de code | Contrat et maquettes figés |
-| Sam 17 h 30 – 20 h | **Bloc 1** : adaptateurs de sources, moteur de score, écrans | Briques testées séparément |
-| **Sam 20 h au plus tard** | **Intégration complète** (plus tôt si toutes les sources sont prêtes) : David relit et fusionne les PR, branche la route `/api/analyze`, puis premier déploiement Azure. Pas de déploiement partiel avant. | URL publique qui répond |
-| Sam 21 h – minuit | **Bloc 2** : 4 modes complets, fiches de site, candidats | MVP fonctionnel |
-| Dim 9 h – 12 h | **Bloc 3** : tests fonctionnels, validation des scores, corrections | MVP stable |
+| Dim matin | Décisions d'équipe (voir plus bas), validation des sites par Wassim, tests à la main par Yann | Données et réglages validés |
+| Dim matin | Déploiement Azure, avec l'accord de David | URL publique |
 | **Dim 12 h** | **Gel du code** (seulement des correctifs bloquants après) | Version de démo |
-| Dim 12 h – soumission | Répétition de la démo, vidéo de secours, soumission | Projet soumis |
+| Dim 12 h – soir | Interface en anglais si décidé, démo, page de projet | Démo et textes en anglais |
+| **Dim 23 h 59** | **Heure limite de soumission** (soumission par l'équipe, sur décision de David) | Projet soumis |
 
-Points d'équipe de 10 minutes : sam 20 h, sam minuit, dim 9 h, dim 12 h.
+Points d'équipe de 10 minutes : dim 9 h, dim 12 h, dim 18 h.
 
 ## Règles de travail
 
 - Une branche par tâche, une pull request vers `main`. **David relit et fusionne les PR** (revue de code avant chaque fusion).
-- Aucun secret dans le repo (voir [architecture.md](architecture.md#sécurité-revue-xavier)).
+- Aucun secret dans le repo ([securite.md](securite.md)).
 - Bloqué plus de 30 minutes : on le dit dans le canal d'équipe.
-- Chacun peut s'appuyer sur Claude : donnez-lui le lien du repo et le fichier de doc lié à votre tâche, demandez du concret (code, tableau, texte), puis vérifiez le résultat.
-- **Personne n'attend personne** : on code contre les [contrats partagés](contrats.md) et les données d'exemple (`data/fixtures/site-values.json`), puis on branche le vrai livrable quand il arrive. Un changement de contrat se décide en équipe, dans une PR dédiée.
+- Chacun peut s'appuyer sur Claude : donnez-lui le lien du repo et le fichier de doc lié à votre tâche, demandez du concret, puis vérifiez le résultat.
+- Après toute modification de `data/candidates.json` : relancer `tools/precompute/` (voir `apps/api/README.md`), puis `python tools/validation/rankings.py` et `python tools/validation/e2e.py`.
 
-## Passages de relais
+## État du dépôt (dim 15 nov, 1 h 30)
 
-| Qui attend | Tâche | Attend | Prévu | Pour avancer sans attendre |
-|---|---|---|---|---|
-| David | Site en ligne (v0) | Jesus : squelette API ; François : squelette web | sam 17 h 30 | Appliquer Terraform tout de suite (image de démonstration déjà prévue), pousser les vraies images après fusion |
-| David | Profil lunaire | Wassim : specs rovers lunaires | sam 18 h 30 | Partir des intervalles de `docs/scenarios.md` |
-| David | `/api/analyze` branché | Jesus : connecteurs POWER, USGS, DEM, MODIS | sam 20 h – 22 h | Connecteur factice qui lit les fixtures, remplacé source par source |
-| David | Version de démo | François : fiche site | dim minuit | Redéployer ce qui est fusionné à chaque jalon |
-| Jesus | Routes `/parameters`, `/modes`, `/sites` | Wassim : `data/candidates.json` | sam 21 h | Servir les 3 sites des fixtures |
-| Jesus | Explication par Claude (bonus) | David : `/api/analyze` | sam 23 h 30 | Préparer l'appel avec un site des fixtures |
-| François | Écran d'accueil | Yann : maquettes, textes d'aide | sam 17 h 30 / 20 h | Écran simple d'après `docs/scenarios.md`, textes provisoires dans un fichier séparé |
-| François | Carte, fiche site | David : `/api/analyze` | sam 23 h 30 | Lire les fixtures (même format que la réponse de l'API) |
-| François | Formulaire mode 4 | Yann : textes d'aide | sam 20 h | Paramètres tirés de `docs/scenarios.md`, textes branchés plus tard |
-| Wassim | Vérification des classements | David : version déployée | dim 12 h | API en local depuis `main` dès que `/api/analyze` est fusionné |
-| Yann | Tests de la v0 | David : site en ligne | sam 20 h | Tester les écrans en local avec les fixtures |
-| Yann | Feu vert du gel | David : version de démo | dim 12 h | Dérouler le plan de test sur la dernière version déployée |
-| Xavier | Contrôle du site en ligne | David : site en ligne | sam 20 h | Relire la config CORS et la limitation de débit dans le code |
-| Xavier | Script et vidéo de démo | François : fiche site ; Wassim : 3 sites | dim minuit / 11 h | Script sur les maquettes de Yann, vidéo en dernier |
+Toutes les PR (#38, #47, #48, #49, #50) et les branches de Jesus sont fusionnées sur `main`. L'application complète se lance avec `docker compose up --build` (front sur `localhost:8080`, API sur `localhost:3001`).
 
-La page de suivi montre en direct, pour chaque tâche, ce qu'elle attend (vert quand c'est livré) et ce qu'elle débloque.
+| Brique | État |
+|---|---|
+| Moteur de score (TS) | Modes 1 à 3, critères libres, filtre « sol nu » (NDVI ≤ 0,2), identique au scorer Python |
+| API | `/api/analyze`, `/api/sites/{id}` (valeurs, source de chaque valeur, référence lunaire), `/api/sources`, `/api/modes`, `/api/parameters`, `/api/reference/moon`, `/api/docs` ; CORS, limitation de débit |
+| Données Terre | 37 sites (9 analogues connus, 1 témoin négatif, 27 peu étudiés) ; relief et MODIS précalculés ; POWER, USGS et GVP en direct |
+| Données Lune | Pente et rugosité du pôle Sud calculées avec LOLA (même méthode que sur Terre) ; froid, vide, gravité, rayonnement sourcés |
+| Front | Modes, carte, fiche site (valeur lunaire, source, limites de la Terre), mode 4 avec aide, liste des sources ; types générés depuis OpenAPI |
+| Tests | API 111, Python 22, bout en bout 12/12, classements tenus |
+| Sécurité | 0 vulnérabilité npm, aucun secret, en-têtes de sécurité sur l'API et le front |
+| Déploiement | `deploy.sh` corrigé ; **pas encore lancé** (accord de David requis) |
 
-## État du dépôt (sam 14 nov, 16 h 30)
+## Décisions d'équipe en attente
 
-Chaque tâche a son issue GitHub (#3 à #37, libellé = prénom). Ce qui existe déjà, à réutiliser plutôt qu'à refaire :
+| Décision | Options | Où |
+|---|---|---|
+| Langue de l'interface | Traduire l'interface en anglais avant la soumission, ou lier le dépôt (présentation anglaise en tête du README) et une démo en anglais | [soumission.md](soumission.md) |
+| Nom du projet | Proposition : *Lunar Twins on Earth* | [soumission.md](soumission.md) |
+| Valeurs proposées par Wassim | `lst_amplitude` (seuil trop faible face aux ~300 K lunaires), `t2m_mean` du forage (≤ -10 °C ?), seuil `quake_count` | [verification-modes-1-2.md](verification-modes-1-2.md) |
+| Règle des critères manquants | Un critère sans valeur est exclu du total (couverture affichée « n/m critères ») ; aujourd'hui tous les critères ont une valeur sur les 37 sites | [contrats.md](contrats.md) |
+| Maquettes de Yann | Solution 1 (exploration libre) ou 2 (parcours en 4 chapitres), pour la phase interface | [parcours-utilisateur.md](parcours-utilisateur.md) |
+| Déploiement Azure | Quand lancer `deploy.sh` (ressources payantes) | #3 |
 
-| Branche | Auteur | Contenu | PR |
-|---|---|---|---|
-| `main` | David | Docs, contrats, fixtures, Terraform | — |
-| `david/moteur-score` | David | Moteur de score TS + service `analyze()` + profil lunaire (brouillon), 42 tests | #38, en revue |
-| `search-engine-geolocalization` | Jesus | `tools/precompute/` : pente, rugosité, altitude Copernicus DEM précalculées dans `data/candidates.json` (bloc `precomputed`) | à ouvrir |
-| `search-engine-scoring-v1` | Jesus | `tools/scoring/score_sites.py` : vérificateur Python du score. **Résultats identiques au moteur TS** sur les fixtures (3 modes) | à ouvrir |
-| `search_engine_geolocation_v_0` | Jesus | `tools/analog_backend/` : prototype Python de référence, hors application (`lro.py` utile pour le profil lunaire) | à ouvrir |
-| `Francois`, `francois-ui` | François | Aucun commit pour l'instant | — |
-
-Points à trancher à l'intégration :
-- **Sites exclus (NDVI)** : le moteur TS les garde en fin de liste avec `excluded: "vegetation"` (contrat, PR #38) ; le vérificateur Python les met dans une liste `excluded` séparée. Aligner le vérificateur sur le contrat.
-- **Copernicus DEM** : Jesus a choisi le précalcul hors ligne. Il faut un connecteur qui lit le bloc `precomputed` de `data/candidates.json` (quelques lignes, à brancher sur `analyze()`).
+Changements de réglage déjà faits, à relire en équipe :
+- **Mode robotique** : pente moyenne 5 à 13° et rugosité 22 à 65 m, tirées du relief LOLA réel du pôle Sud (au lieu de 5 à 15° et 5 à 40 m). La proposition 3 à 10° (traversées d'Apollo, terrains équatoriaux) n'est pas retenue.
+- **Filtre « sol nu »** : NDVI ≤ 0,2 au lieu de 0,1, qui écartait des déserts nus (Namib, Sahara) et deux terrains d'essai de la NASA ([scenarios.md](scenarios.md)).
 
 ---
 
 ## David — chef de projet, infrastructure, moteur de score
 
-- [x] Contrats partagés (`docs/contrats.md`) et données d'exemple (`data/fixtures/site-values.json`), sur `main`.
-- [x] Créer une issue GitHub par tâche (#3 à #37).
-- [ ] Sam 20 h au plus tard : intégration complète, puis `infra/terraform/deploy.sh` exécuté, URL de l'API et du front publiques (#3).
-- [x] Moteur de score dans `apps/api/src/scoring/` : fonction pure (critères + valeurs → scores), modes 1 à 3, tests unitaires (PR #38, en revue). Vérification croisée avec le scorer Python de Jesus : résultats identiques.
-- [ ] Route `POST /api/analyze` branchée sur le moteur et les adaptateurs de Jesus. *Fait : service `analyze()` dans `apps/api/src/analyze/` (validation, fusion des connecteurs, tri) et connecteur factice sur les fixtures. Reste : la route Express, une fois le squelette de Jesus fusionné.*
-- [ ] `data/reference/moon-south-pole.json` avec Wassim. *Fait : brouillon avec les valeurs sourcées (latitude, froid des zones d'ombre, absence d'atmosphère). Reste : pente, température de jour, séismes, ensoleillement (liste `todo` du fichier).*
-- [ ] Revue de code et fusion des PR (ce soir), déploiements de l'intégration (sam 20 h, sam minuit, dim 12 h) et arbitrage des priorités.
+- [x] Contrats partagés et données d'exemple, sur `main`.
+- [x] Issues GitHub par tâche (#3 à #37).
+- [x] Moteur de score (`apps/api/src/scoring/`), vérifié contre le scorer Python de Jesus.
+- [x] Route `POST /api/analyze` (#4, faite dans #50).
+- [x] Revue et fusion des PR, intégration complète, `docker compose` local.
+- [ ] Profil lunaire (#5). *Fait : relief LOLA, froid, gravité, vide, rayonnement, séismes. Reste : température de jour des crêtes éclairées (Diviner) et ensoleillement (LOLA).*
+- [ ] Préparer le poste de déploiement : installer `terraform` dans WSL (demande sudo), `az login` (#52). **Nouveau.**
+- [ ] Déploiement Azure avec `infra/terraform/deploy.sh` (#3), puis `python3 tools/validation/e2e.py --web <front> --api <api>`.
+- [ ] Décisions d’équipe ci-dessus (#51).
+- [ ] Partager la page de suivi avec l'équipe (menu Partager de la page, #53). **Nouveau.**
+- [ ] Mettre à jour `contexte-david/` (branche `david/contexte`) avant de passer sur le Mac portable (#54). **Nouveau.**
 
-## Jesus — API et sources de données (dev + IA)
+## Jesus — API et sources de données
 
-- [ ] Squelette `apps/api` : Node + TypeScript + Express (ES modules), `/api/health`, Dockerfile (port 3001), Swagger UI. *`apps/api/package.json`, `tsconfig.json` et vitest existent déjà dans la branche `david/moteur-score` : partir de cette branche ou compléter ces fichiers plutôt que les recréer.*
-- [ ] `apps/api/openapi.yaml` avec François, figé à sam 17 h 30 (routes : [architecture.md](architecture.md#api-contrat-openapi-à-écrire-en-premier)).
-- [ ] Adaptateurs dans `apps/api/src/sources/` qui renvoient les paramètres du catalogue ([scenarios.md](scenarios.md)) :
-  - [ ] NASA POWER (température, vent, humidité, précipitations, ensoleillement)
-  - [ ] Copernicus DEM : pente moyenne et max, rugosité. *En cours : précalcul Python dans `tools/precompute/` (branche `search-engine-geolocalization`) ; reste le connecteur qui lit le bloc `precomputed`.*
-  - [ ] Planetary Computer MODIS : LST jour/nuit et NDVI (jeton anonyme, nouvelle tentative sur 502)
-  - [ ] USGS séismes, Smithsonian GVP (distance au volcan)
-- [ ] Cache mémoire, `express-rate-limit`, CORS limité au domaine du front.
-- [ ] Routes `/api/parameters`, `/api/modes`, `/api/sites/{id}`. *Le catalogue (`PARAM_IDS`) et les modes (`MODES`) existent dans `apps/api/src/scoring/` : les réutiliser.*
-- [x] Vérificateur Python du score (`tools/scoring/`, branche `search-engine-scoring-v1`) : à aligner sur le format `excluded` du contrat, puis ouvrir la PR.
-- [ ] Ouvrir les PR des branches `search-engine-geolocalization`, `search-engine-scoring-v1` et `search_engine_geolocation_v_0` avant 20 h.
-- [ ] Bonus (dimanche seulement si le MVP est stable) : courte explication du site générée par Claude, avec la clé dans un secret de la Container App.
+- [x] Squelette `apps/api`, Swagger, Dockerfile (#7), contrat OpenAPI (#8).
+- [x] NASA POWER et USGS (#9), Copernicus DEM précalculé (#10), MODIS précalculé et corrigé (#11), GVP, cache, limitation de débit, CORS (#12).
+- [x] Routes `/api/parameters`, `/api/modes`, `/api/sites/{id}` (#13).
+- [x] Vérificateur Python du score, branches fusionnées.
+- [ ] Relire les corrections du 15/11 : tuile MODIS calculée (`modis_values.py`), bord de tuile DEM (`point_geometry.py`), `lunar_reference.py` (#55). **Nouveau.**
+- [ ] Bonus, seulement si le MVP est stable : explication de site générée par Claude (#14).
 
 ## François — front
 
-- [ ] Squelette `apps/web` : React + TypeScript + Vite + Tailwind + Leaflet + zustand (comme meteormadness).
-- [ ] Contrat OpenAPI avec Jesus ; client API typé généré à partir du contrat.
-- [ ] Écran d'accueil : choix entre les 4 modes (d'après les maquettes de Yann).
-- [ ] Carte Leaflet : sites colorés selon le score ; fond de carte terrestre, encart lunaire en Moon Trek WMTS (bonus).
-- [ ] Fiche site : score global, score par critère, « correspond / ne correspond pas », usage possible.
-- [ ] Formulaire du mode 4 : choix des paramètres, intervalles, poids.
+- [x] Squelette `apps/web` (#15), client API typé généré depuis le contrat (#16).
+- [x] Écran d'accueil (#17), carte (#18), fiche site (#19), formulaire du mode 4 (#20).
+- [ ] Relire les ajouts du 15/11 dans la fiche : valeur lunaire, source de chaque valeur, limites de la Terre, liste des sources, textes d’aide (#56). **Nouveau.**
+- [ ] Interface en anglais, si l'équipe le décide (libellés, textes d'aide, messages d’erreur, #57). **Nouveau.**
 
-## Wassim — expertise métier (robotique, instruments) et données
+## Wassim — expertise métier et données
 
-- [ ] Vérifier les intervalles des modes 1 et 2 de [scenarios.md](scenarios.md) : chercher avec Claude les spécifications des rovers lunaires (pente franchissable, températures) et des instruments (forage, sismomètres Apollo) ; noter chaque source.
-- [ ] Créer `data/candidates.json` : les 7 sites de validation + 30 à 50 sites peu étudiés (format : [contrats.md §1](contrats.md#1-sites-candidats--datacandidatesjson-wassim)).
-- [ ] Sam 23 h 30 : écrire le classement attendu par mode (quels sites en haut, lesquels en bas, et pourquoi).
-- [ ] Avec David : valeurs lunaires de référence (Diviner, LOLA, LEND) dans `data/reference/moon-south-pole.json`, avec les sources.
-- [ ] Dimanche : lancer les 4 modes et vérifier le classement (analogues connus en haut, Amazonie en bas) ; signaler les écarts.
-- [ ] Fournir à Xavier 3 sites peu étudiés « coups de cœur » pour la présentation.
+- [x] Spécifications des rovers lunaires (#21), vérification des modes 1 et 2 (#22) : [verification-modes-1-2.md](verification-modes-1-2.md).
+- [x] Classement attendu par mode (#24) et vérification des classements (#25) : [validation-classements.md](validation-classements.md). *À relire.*
+- [ ] Valider `data/candidates.json` (#23) : coordonnées approchées (champ `note`), points sur la terre ferme dans une fenêtre de 1 km, champ `known_for`.
+- [ ] Confirmer ou remplacer les 3 sites coups de cœur (#26).
+- [ ] Profil lunaire avec David (#5) : température de jour des crêtes et ensoleillement.
 
-## Yann — expérience utilisateur et tests fonctionnels
+## Yann — expérience utilisateur et tests
 
-- [ ] Sam 17 h 30 : parcours utilisateur et maquettes (accueil, carte, fiche site, mode 4), remis à François.
-- [ ] Libellés et textes d'aide de chaque paramètre et de chaque mode, compréhensibles par le grand public.
-- [ ] Critères d'acceptation par mode et plan de test dans `docs/tests-fonctionnels.md`.
-- [ ] Sam soir : tester la v0 déployée ; ouvrir une issue par anomalie.
-- [ ] Dim 9 h – 12 h : campagne de tests complète, nouveaux tests des correctifs, feu vert pour le gel de 12 h.
+- [x] Parcours et maquettes (#27), textes d'aide (#28), plan de test (#29).
+- [ ] Tests à la main TV-01 à TV-08 ([tests-fonctionnels.md](tests-fonctionnels.md)), en local puis sur la version déployée ; une issue par anomalie (#30).
+- [ ] Campagne complète et feu vert du gel de 12 h (#31).
 
-## Xavier — sécurité et présentation
+## Xavier — sécurité, présentation, soumission
 
-- [ ] Revue sécurité : `.gitignore`, aucun secret dans l'historique git, CORS, limitation de débit, `npm audit`, en-têtes HTTP du site déployé. Résultat dans `docs/securite.md`.
-- [ ] Présentation (aidé de Claude pour structurer et rédiger) : le problème, les 4 modes, la démo, les sites peu étudiés trouvés, les limites de l'analogie, Mars en phase 2.
-- [ ] Script de démo de 3 minutes et vidéo de secours (capture d'écran) au cas où le réseau tombe.
-- [ ] Soumission Space Apps : vérifier les exigences officielles et l'heure limite, préparer les textes, liens (repo, site, vidéo) et membres de l'équipe.
-- [ ] Dim 12 h – soumission : répétition avec toute l'équipe.
+- [x] Exigences et heure limite de soumission (#32) : [soumission.md](soumission.md).
+- [x] Revue sécurité du repo (#33) : [securite.md](securite.md).
+- [ ] Plan de la présentation (#34) : brouillon en 7 diapositives dans [presentation.md](presentation.md).
+- [ ] Contrôle du site en ligne (#35) : en-têtes, CORS, limitation de débit sur Azure.
+- [ ] Démo (#36) : vidéo de **30 s au plus** ou **7 diapositives**, en anglais (le plan initial parlait d'un script de 3 minutes, hors règlement). Brouillon dans [presentation.md](presentation.md).
+- [ ] Page de projet Space Apps en anglais : reprendre les brouillons de [soumission.md](soumission.md), vérifier que tous les membres sont confirmés au même événement local (#58). **Nouveau.** Ne pas soumettre sans l'accord de David.
+- [ ] Répétition générale et soumission (#37), avant dim 23 h 59.
 
 ---
 
@@ -145,22 +138,24 @@ Points à trancher à l'intégration :
 
 | Risque | Parade |
 |---|---|
-| Une source est lente ou en panne pendant la démo | Cache mémoire préchauffé avant la démo ; vidéo de secours |
-| Le calcul de pente sur COG prend trop de temps | Fenêtre réduite, ou NASADEM ; en dernier recours, pente retirée du mode concerné |
-| Les scores ne retrouvent pas les analogues connus | Wassim et David ajustent les intervalles dim matin |
-| Retard sur le front | Le mode 4 passe en bonus ; les modes 1 à 3 d'abord |
+| Interface en français alors que le règlement demande l'anglais | Décider dimanche matin : traduction de l'interface, ou dépôt et démo en anglais |
+| Une source en direct (POWER, USGS, GVP) est lente pendant la démo | Première analyse lancée avant la démo (cache) ; vidéo de secours |
+| Une coordonnée de site tombe sur de l'eau ou une oasis | Contrôle de Wassim ; vérifier altitude, pente et NDVI dans `data/candidates-precomputed.json` |
 | Déploiement Azure bloqué | Démo en local avec `docker compose` |
+| La démo dépasse 30 s ou 7 diapositives | Chronométrer ; le projet serait inéligible au jugement global |
 
 ---
 
 ## Après le MVP : expérience utilisateur différenciante
 
-Une fois le MVP livré, l'interface doit passer d'un affichage de scores à une **expérience visuelle et dynamique** : pas de site à tableaux de données. Détails et ordre de priorité : [ux.md](ux.md). Issues : libellé `apres-mvp`.
+Une fois le MVP livré, revue complète puis travail sur l'interface et la livraison en production. Détails : [ux.md](ux.md). Issues : libellé `apres-mvp`.
 
-1. **Re-classement en direct** dans le navigateur : le front importe le moteur de score (fonction pure) et recalcule à chaque mouvement de curseur.
+1. **Re-classement en direct** dans le navigateur : le front importe le moteur de score (fonction pure).
 2. **Globe 3D** des sites candidats, animé au changement de mode.
-3. **Vue « jumeau lunaire »** : site terrestre et région lunaire côte à côte, écart visuel par paramètre.
+3. **Vue « jumeau lunaire »** : site terrestre et région lunaire côte à côte.
 4. **Signature radar** de chaque site, superposée au profil lunaire.
-5. **Modes présentés comme des missions** (cartes illustrées).
+5. **Modes présentés comme des missions**.
 6. **Mode 4 en curseurs** reliés au globe.
 7. **Sites peu étudiés mis en avant** : badge « découverte » et fiche narrative.
+
+Pistes de données pour la suite : RADARSAT-1 et RCM comparés à LRO Mini-RF, données de navigation de rover de l'île Devon, Mars (MOLA, THEMIS, CRISM), grille mondiale.

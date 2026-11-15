@@ -2,7 +2,7 @@
   "id": "moon-south-pole",
   "body": "moon",
   "name": "Pôle Sud lunaire",
-  "status": "brouillon : seules les valeurs sourcées sont renseignées, le reste est à compléter avec Wassim (voir todo)",
+  "status": "sourcé : relief LOLA calculé comme sur Terre, froid et absence d’atmosphère sourcés ; reste à sourcer : température de jour des crêtes, ensoleillement (voir todo)",
   "params": {
     "latitude_abs": {
       "min": 84,
@@ -38,12 +38,102 @@
       "max": 0,
       "unit": "",
       "source": "Aucune végétation"
+    },
+    "slope_mean": {
+      "min": 5.23,
+      "max": 12.89,
+      "unit": "°",
+      "distribution": {
+        "p10": 3.57,
+        "p25": 5.23,
+        "p50": 8.31,
+        "p75": 12.89,
+        "p90": 17.68
+      },
+      "source": "LRO LOLA LDEM_85S_40M (NASA PDS Geosciences Node, lro-l-lola-3-rdr-v1), 40 m/pixel, 85°S-90°S ; pente et rugosité calculées en fenêtres de 1 km comme pour la Terre (tools/precompute/lunar_reference.py) ; intervalle interquartile (p25-p75) de 71731 fenêtres de 1000 m"
+    },
+    "slope_max": {
+      "min": 13.85,
+      "max": 23.26,
+      "unit": "°",
+      "distribution": {
+        "p10": 10.8,
+        "p25": 13.85,
+        "p50": 18.17,
+        "p75": 23.26,
+        "p90": 28.53
+      },
+      "source": "LRO LOLA LDEM_85S_40M (NASA PDS Geosciences Node, lro-l-lola-3-rdr-v1), 40 m/pixel, 85°S-90°S ; pente et rugosité calculées en fenêtres de 1 km comme pour la Terre (tools/precompute/lunar_reference.py) ; intervalle interquartile (p25-p75) de 71731 fenêtres de 1000 m"
+    },
+    "roughness": {
+      "min": 21.51,
+      "max": 64.95,
+      "unit": "m",
+      "distribution": {
+        "p10": 11.43,
+        "p25": 21.51,
+        "p50": 39.32,
+        "p75": 64.95,
+        "p90": 91.81
+      },
+      "source": "LRO LOLA LDEM_85S_40M (NASA PDS Geosciences Node, lro-l-lola-3-rdr-v1), 40 m/pixel, 85°S-90°S ; pente et rugosité calculées en fenêtres de 1 km comme pour la Terre (tools/precompute/lunar_reference.py) ; intervalle interquartile (p25-p75) de 71731 fenêtres de 1000 m"
     }
   },
   "todo": [
-    "slope_mean, slope_max, roughness : LOLA (GDR ou cartes de pente des régions Artemis III)",
     "lst_day, lst_amplitude : Diviner, températures maximales des crêtes éclairées (cartes de Sefton-Nash et al., EPSC 2013)",
     "quake_count : séismes lunaires peu profonds, sismomètres Apollo (Nakamura)",
     "solar : fraction d'éclairage des crêtes polaires (Mazarico et al. 2011, LOLA)"
-  ]
+  ],
+  "earth_limits": [
+    {
+      "id": "gravity",
+      "label": "Gravité",
+      "moon": "1,62 m/s²",
+      "earth": "9,81 m/s²",
+      "effect": "Mobilité, ancrage, forage et poussière se comportent autrement : aucun site terrestre ne reproduit la gravité lunaire (environ 1/6).",
+      "source": "NASA, Moon Fact Sheet (NSSDCA) — https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html"
+    },
+    {
+      "id": "vacuum",
+      "label": "Vide",
+      "moon": "pression de surface d’environ 3 × 10⁻¹⁵ bar (exosphère)",
+      "earth": "environ 1 bar",
+      "effect": "Pas de convection, pas de vent, pas d’érosion par l’air : les critères vent, humidité et précipitations sont des proxys d’un environnement sec et calme.",
+      "source": "NASA, Moon Fact Sheet (NSSDCA) — https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html"
+    },
+    {
+      "id": "radiation",
+      "label": "Rayonnement",
+      "moon": "ni atmosphère ni champ magnétique global : surface exposée aux rayons cosmiques et aux particules solaires",
+      "earth": "atmosphère et magnétosphère protectrices",
+      "effect": "Aucun site terrestre ne reproduit l’environnement radiatif lunaire.",
+      "source": "NASA, Moon Fact Sheet (NSSDCA) — https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html"
+    },
+    {
+      "id": "cold",
+      "label": "Froid extrême",
+      "moon": "29 à 50 K dans les zones en ombre permanente (Diviner)",
+      "earth": "au plus froid, environ -90 °C (≈ 180 K) en Antarctique",
+      "effect": "Les critères de température sont des proxys de tendance (froid, amplitude), jamais des valeurs absolues.",
+      "source": "Paige et al. 2010, Science 330:479 ; EPSC2013-386 (vérification de Wassim, docs/verification-modes-1-2.md)"
+    },
+    {
+      "id": "regolith",
+      "label": "Régolithe et géologie",
+      "moon": "croûte des hautes terres (anorthosite) au pôle Sud, régolithe non altéré par l’eau ni la vie",
+      "earth": "sols altérés par l’eau, l’air et la vie",
+      "effect": "Le basalte terrestre sert de substitut pour la mécanique des roches ; l’anorthosite (Mistastin, Labrador) est le meilleur jumeau rocheux.",
+      "source": "Moriarty et Petro, EPSC2022-295 (vérification de Wassim)"
+    }
+  ],
+  "context": {
+    "quake_count": {
+      "text": "28 séismes lunaires peu profonds enregistrés en 8 ans par les sismomètres Apollo ; pas de microséisme continu, d’où une sensibilité 100 à 1000 fois celle de la Terre",
+      "source": "Nakamura, NTRS 19930008250 ; Latham et al., NTRS 19780005006 (vérification de Wassim)"
+    },
+    "lst_amplitude": {
+      "text": "à l’équateur, environ 400 K à midi et moins de 100 K la nuit (amplitude d’environ 300 K) ; aucun site terrestre n’approche cette amplitude",
+      "source": "Diviner, EPSC2013-386 (vérification de Wassim)"
+    }
+  }
 }

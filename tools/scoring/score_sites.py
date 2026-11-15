@@ -10,7 +10,7 @@ Rules implemented (scenarios.md):
   * criterion score = 1 inside [min, max]; linear decay to 0 at `tolerance` away from the interval
   * total = sum(w * score) / sum(w), on 100
   * verdict: match >= 0.7 | partial 0.4-0.7 | mismatch < 0.4 | missing (value is null)
-  * common filter: sites with ndvi > 0.1 are excluded before scoring (can be turned off)
+  * common filter: sites with ndvi > 0.2 are excluded before scoring (can be turned off)
 Not defined by the contract, so made explicit here: a MISSING value is left out of the weighted mean
 (missing="skip", default) or counted as 0 (missing="zero"). To be confirmed with the team.
 """
@@ -20,7 +20,7 @@ import json
 import math
 import sys
 
-NDVI_MAX = 0.1
+NDVI_MAX = 0.2
 
 
 def C(param, lo=None, hi=None, tolerance=0.0, weight=1.0) -> dict:
@@ -35,7 +35,7 @@ def C(param, lo=None, hi=None, tolerance=0.0, weight=1.0) -> dict:
 # Intervals / tolerances / weights copied from docs/scenarios.md (first proposal, to be validated by the team).
 MODES: dict[str, list[dict]] = {
     "robotics": [
-        C("slope_mean", 5, 15, 10, 3), C("slope_max", 15, 30, 10, 1), C("roughness", 5, 40, 30, 2),
+        C("slope_mean", 5, 13, 10, 3), C("slope_max", 15, 30, 10, 1), C("roughness", 22, 65, 30, 2),
         C("precipitation", None, 1, 1, 1), C("t2m_min", None, -20, 20, 1), C("lst_amplitude", 20, None, 15, 1),
         C("volcano_distance", None, 50, 100, 1),
     ],

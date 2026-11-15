@@ -16,19 +16,18 @@
       "window_m": 1000.0,
       "computed_at": "2026-11-15T04:32:30+00:00",
       "valid_frac": 1.0,
-      "lst_day": -40.75,
-      "lst_night": -42.13,
-      "lst_amplitude": 1.38,
-      "ndvi": null,
+      "lst_day": -22.64,
+      "lst_night": -20.82,
+      "lst_amplitude": 2.24,
+      "ndvi": -0.002,
       "modis_samples": {
         "lst": 12,
-        "lst_valid_pairs": 2,
+        "lst_valid_pairs": 10,
         "ndvi": 12,
-        "ndvi_valid": 0
+        "ndvi_valid": 9
       },
-      "modis_error": "valeurs absentes : ndvi",
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:34:05+00:00"
+      "modis_computed_at": "2026-11-15T05:01:44+00:00"
     }
   },
   {
@@ -59,7 +58,7 @@
         "ndvi_valid": 12
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:34:24+00:00"
+      "modis_computed_at": "2026-11-15T05:01:59+00:00"
     }
   },
   {
@@ -88,9 +87,9 @@
         "ndvi": 0,
         "ndvi_valid": 0
       },
-      "modis_error": "valeurs absentes : ndvi",
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:34:37+00:00"
+      "modis_computed_at": "2026-11-15T05:15:29+00:00",
+      "modis_error": "valeurs absentes : ndvi"
     }
   },
   {
@@ -121,7 +120,7 @@
         "ndvi_valid": 12
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:34:50+00:00"
+      "modis_computed_at": "2026-11-15T05:02:24+00:00"
     }
   },
   {
@@ -141,18 +140,18 @@
       "window_m": 1000.0,
       "computed_at": "2026-11-15T04:32:37+00:00",
       "valid_frac": 1.0,
-      "lst_day": -8.71,
-      "lst_night": -10.57,
-      "lst_amplitude": 5.8,
-      "ndvi": -0.056,
+      "lst_day": -5.68,
+      "lst_night": -8.45,
+      "lst_amplitude": 2.76,
+      "ndvi": 0.018,
       "modis_samples": {
         "lst": 12,
-        "lst_valid_pairs": 5,
+        "lst_valid_pairs": 11,
         "ndvi": 12,
-        "ndvi_valid": 5
+        "ndvi_valid": 8
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:35:03+00:00"
+      "modis_computed_at": "2026-11-15T05:02:41+00:00"
     }
   },
   {
@@ -182,38 +181,38 @@
         "ndvi_valid": 10
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:35:18+00:00"
+      "modis_computed_at": "2026-11-15T05:03:00+00:00"
     }
   },
   {
     "id": "death-valley",
-    "name": "Vallée de la Mort (Californie)",
-    "lat": 36.46,
-    "lon": -116.87,
+    "name": "Bassin de Badwater, vallée de la Mort (Californie)",
+    "lat": 36.25,
+    "lon": -116.82,
     "terrain": "desert",
     "role": "validation",
-    "note": "Cité dans l'énoncé du défi",
+    "note": "Cité dans l’énoncé du défi ; point sur le bassin salé (le premier point tombait sur l’oasis de Furnace Creek)",
     "precomputed": {
-      "elevation": -57.5,
-      "slope_mean": 2.17,
-      "slope_max": 10.28,
-      "roughness": 4.34,
+      "elevation": -85.5,
+      "slope_mean": 0.3,
+      "slope_max": 1.05,
+      "roughness": 0.19,
       "source": "Copernicus DEM GLO-30",
       "window_m": 1000.0,
-      "computed_at": "2026-11-15T04:32:41+00:00",
+      "computed_at": "2026-11-15T05:15:14+00:00",
       "valid_frac": 1.0,
-      "lst_day": 41.99,
-      "lst_night": 18.71,
-      "lst_amplitude": 23.28,
-      "ndvi": 0.26,
+      "lst_day": 34.55,
+      "lst_night": 22.85,
+      "lst_amplitude": 9.21,
+      "ndvi": 0.014,
       "modis_samples": {
         "lst": 12,
-        "lst_valid_pairs": 12,
+        "lst_valid_pairs": 10,
         "ndvi": 12,
-        "ndvi_valid": 12
+        "ndvi_valid": 10
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:35:39+00:00"
+      "modis_computed_at": "2026-11-15T05:15:54+00:00"
     }
   },
   {
@@ -244,7 +243,7 @@
         "ndvi_valid": 12
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:35:52+00:00"
+      "modis_computed_at": "2026-11-15T05:03:37+00:00"
     }
   },
   {
@@ -264,18 +263,18 @@
       "window_m": 1000.0,
       "computed_at": "2026-11-15T04:32:45+00:00",
       "valid_frac": 1.0,
-      "lst_day": 43.33,
-      "lst_night": 11.59,
-      "lst_amplitude": 31.74,
-      "ndvi": 0.141,
+      "lst_day": 34.99,
+      "lst_night": 7.02,
+      "lst_amplitude": 27.97,
+      "ndvi": 0.151,
       "modis_samples": {
         "lst": 12,
-        "lst_valid_pairs": 5,
+        "lst_valid_pairs": 12,
         "ndvi": 12,
-        "ndvi_valid": 6
+        "ndvi_valid": 12
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:36:04+00:00"
+      "modis_computed_at": "2026-11-15T05:03:39+00:00"
     }
   },
   {
@@ -305,7 +304,7 @@
         "ndvi_valid": 12
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:36:25+00:00"
+      "modis_computed_at": "2026-11-15T05:03:58+00:00"
     }
   },
   {
@@ -336,7 +335,7 @@
         "ndvi_valid": 12
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:36:40+00:00"
+      "modis_computed_at": "2026-11-15T05:04:16+00:00"
     }
   },
   {
@@ -356,18 +355,18 @@
       "window_m": 1000.0,
       "computed_at": "2026-11-15T04:32:48+00:00",
       "valid_frac": 1.0,
-      "lst_day": -14.55,
-      "lst_night": -17.99,
-      "lst_amplitude": 3.45,
-      "ndvi": -0.041,
+      "lst_day": -12.81,
+      "lst_night": -17.34,
+      "lst_amplitude": 4.71,
+      "ndvi": -0.017,
       "modis_samples": {
         "lst": 12,
-        "lst_valid_pairs": 4,
+        "lst_valid_pairs": 11,
         "ndvi": 12,
-        "ndvi_valid": 1
+        "ndvi_valid": 9
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:36:53+00:00"
+      "modis_computed_at": "2026-11-15T05:04:35+00:00"
     }
   },
   {
@@ -387,18 +386,19 @@
       "window_m": 1000.0,
       "computed_at": "2026-11-15T04:32:50+00:00",
       "valid_frac": 1.0,
-      "lst_day": -15.05,
-      "lst_night": -17.4,
-      "lst_amplitude": 2.35,
-      "ndvi": 0.199,
+      "lst_day": -15.7,
+      "lst_night": -17.34,
+      "lst_amplitude": 1.64,
+      "ndvi": null,
       "modis_samples": {
         "lst": 12,
-        "lst_valid_pairs": 6,
+        "lst_valid_pairs": 12,
         "ndvi": 12,
-        "ndvi_valid": 1
+        "ndvi_valid": 5
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:37:06+00:00"
+      "modis_computed_at": "2026-11-15T05:16:17+00:00",
+      "modis_error": "valeurs absentes : ndvi"
     }
   },
   {
@@ -429,7 +429,7 @@
         "ndvi_valid": 11
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:37:20+00:00"
+      "modis_computed_at": "2026-11-15T05:05:09+00:00"
     }
   },
   {
@@ -460,7 +460,7 @@
         "ndvi_valid": 12
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:37:41+00:00"
+      "modis_computed_at": "2026-11-15T05:05:26+00:00"
     }
   },
   {
@@ -480,18 +480,18 @@
       "window_m": 1000.0,
       "computed_at": "2026-11-15T04:32:56+00:00",
       "valid_frac": 1.0,
-      "lst_day": -20.28,
-      "lst_night": -20.76,
-      "lst_amplitude": 0.48,
-      "ndvi": -0.059,
+      "lst_day": -19.35,
+      "lst_night": -19.92,
+      "lst_amplitude": 0.57,
+      "ndvi": -0.026,
       "modis_samples": {
         "lst": 12,
-        "lst_valid_pairs": 7,
+        "lst_valid_pairs": 12,
         "ndvi": 12,
-        "ndvi_valid": 4
+        "ndvi_valid": 9
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:37:55+00:00"
+      "modis_computed_at": "2026-11-15T05:05:43+00:00"
     }
   },
   {
@@ -521,7 +521,7 @@
         "ndvi_valid": 9
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:38:10+00:00"
+      "modis_computed_at": "2026-11-15T05:06:01+00:00"
     }
   },
   {
@@ -552,7 +552,7 @@
         "ndvi_valid": 9
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:38:25+00:00"
+      "modis_computed_at": "2026-11-15T05:06:24+00:00"
     }
   },
   {
@@ -572,19 +572,18 @@
       "window_m": 1000.0,
       "computed_at": "2026-11-15T04:33:01+00:00",
       "valid_frac": 1.0,
-      "lst_day": -6.55,
-      "lst_night": -14.92,
-      "lst_amplitude": 8.36,
-      "ndvi": null,
+      "lst_day": -13.94,
+      "lst_night": -20.59,
+      "lst_amplitude": 6.34,
+      "ndvi": -0.051,
       "modis_samples": {
         "lst": 12,
-        "lst_valid_pairs": 5,
+        "lst_valid_pairs": 11,
         "ndvi": 12,
-        "ndvi_valid": 0
+        "ndvi_valid": 12
       },
-      "modis_error": "valeurs absentes : ndvi",
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:38:37+00:00"
+      "modis_computed_at": "2026-11-15T05:06:38+00:00"
     }
   },
   {
@@ -613,9 +612,9 @@
         "ndvi": 0,
         "ndvi_valid": 0
       },
-      "modis_error": "valeurs absentes : ndvi",
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:38:45+00:00"
+      "modis_computed_at": "2026-11-15T05:16:28+00:00",
+      "modis_error": "valeurs absentes : ndvi"
     }
   },
   {
@@ -646,7 +645,7 @@
         "ndvi_valid": 12
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:39:09+00:00"
+      "modis_computed_at": "2026-11-15T05:06:59+00:00"
     }
   },
   {
@@ -666,19 +665,18 @@
       "window_m": 1000.0,
       "computed_at": "2026-11-15T04:33:07+00:00",
       "valid_frac": 1.0,
-      "lst_day": null,
-      "lst_night": null,
-      "lst_amplitude": null,
-      "ndvi": null,
+      "lst_day": 10.07,
+      "lst_night": -13.11,
+      "lst_amplitude": 23.18,
+      "ndvi": 0.101,
       "modis_samples": {
         "lst": 12,
-        "lst_valid_pairs": 0,
+        "lst_valid_pairs": 12,
         "ndvi": 12,
-        "ndvi_valid": 0
+        "ndvi_valid": 12
       },
-      "modis_error": "valeurs absentes : ndvi, lst_day, lst_night, lst_amplitude",
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:39:20+00:00"
+      "modis_computed_at": "2026-11-15T05:07:15+00:00"
     }
   },
   {
@@ -709,7 +707,7 @@
         "ndvi_valid": 12
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:39:44+00:00"
+      "modis_computed_at": "2026-11-15T05:07:39+00:00"
     }
   },
   {
@@ -739,7 +737,7 @@
         "ndvi_valid": 12
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:40:04+00:00"
+      "modis_computed_at": "2026-11-15T05:08:03+00:00"
     }
   },
   {
@@ -769,7 +767,7 @@
         "ndvi_valid": 12
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:40:10+00:00"
+      "modis_computed_at": "2026-11-15T05:08:11+00:00"
     }
   },
   {
@@ -799,7 +797,7 @@
         "ndvi_valid": 12
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:40:30+00:00"
+      "modis_computed_at": "2026-11-15T05:08:34+00:00"
     }
   },
   {
@@ -829,7 +827,7 @@
         "ndvi_valid": 12
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:40:47+00:00"
+      "modis_computed_at": "2026-11-15T05:08:51+00:00"
     }
   },
   {
@@ -860,7 +858,7 @@
         "ndvi_valid": 12
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:41:02+00:00"
+      "modis_computed_at": "2026-11-15T05:09:11+00:00"
     }
   },
   {
@@ -890,7 +888,7 @@
         "ndvi_valid": 12
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:41:16+00:00"
+      "modis_computed_at": "2026-11-15T05:09:29+00:00"
     }
   },
   {
@@ -920,7 +918,7 @@
         "ndvi_valid": 12
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:41:17+00:00"
+      "modis_computed_at": "2026-11-15T05:09:31+00:00"
     }
   },
   {
@@ -951,7 +949,7 @@
         "ndvi_valid": 12
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:41:32+00:00"
+      "modis_computed_at": "2026-11-15T05:09:52+00:00"
     }
   },
   {
@@ -982,7 +980,7 @@
         "ndvi_valid": 12
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:41:51+00:00"
+      "modis_computed_at": "2026-11-15T05:10:14+00:00"
     }
   },
   {
@@ -1012,7 +1010,7 @@
         "ndvi_valid": 12
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:42:11+00:00"
+      "modis_computed_at": "2026-11-15T05:10:39+00:00"
     }
   },
   {
@@ -1042,7 +1040,7 @@
         "ndvi_valid": 12
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:42:34+00:00"
+      "modis_computed_at": "2026-11-15T05:11:02+00:00"
     }
   },
   {
@@ -1072,7 +1070,7 @@
         "ndvi_valid": 12
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:42:50+00:00"
+      "modis_computed_at": "2026-11-15T05:11:21+00:00"
     }
   },
   {
@@ -1102,7 +1100,7 @@
         "ndvi_valid": 12
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:43:05+00:00"
+      "modis_computed_at": "2026-11-15T05:11:52+00:00"
     }
   },
   {
@@ -1132,7 +1130,7 @@
         "ndvi_valid": 12
       },
       "modis_source": "MODIS modis-11A2-061 + modis-13A1-061 (Planetary Computer), 2024",
-      "modis_computed_at": "2026-11-15T04:43:24+00:00"
+      "modis_computed_at": "2026-11-15T05:12:20+00:00"
     }
   }
 ]

@@ -76,7 +76,7 @@ Requête : `{ "mode": "robotics" | "calibration" | "colony" }` ou `{ "criteria":
 }
 ```
 
-Les sites sont triés par `total` décroissant. Un site végétalisé (NDVI > 0,1) reste dans la liste, en dernier, avec `"total": 0` et `"excluded": "vegetation"` : l'Amazonie apparaît ainsi en bas avec la raison de son exclusion. `GET /api/sites/{id}` renvoie le même objet site, plus `values` (toutes les valeurs brutes) et `sources`.
+Les sites sont triés par `total` décroissant. Un site végétalisé (NDVI > 0,2) reste dans la liste, en dernier, avec `"total": 0` et `"excluded": "vegetation"` : l'Amazonie apparaît ainsi en bas avec la raison de son exclusion. `GET /api/sites/{id}` renvoie le même objet site, plus `values` (toutes les valeurs brutes) et `sources`.
 
 ## 6. Données d'exemple — `data/fixtures/site-values.json`
 
