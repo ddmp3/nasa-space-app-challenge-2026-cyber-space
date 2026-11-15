@@ -7,10 +7,16 @@
 #   ./infra/update.sh --api-only   API only
 #   ./infra/update.sh --web-only   front end only
 #
+# The DEV subscription name differs between machines: override it with AZ_SUBSCRIPTION,
+# for example  AZ_SUBSCRIPTION=dev-meteormadness ./infra/update.sh  (never the PROD subscription).
+#
 # Needs: az (logged in: az login), docker (running), node 22+ with npm.
 set -euo pipefail
 
-SUBSCRIPTION="dev"
+SUBSCRIPTION="${AZ_SUBSCRIPTION:-dev}"
+case "$SUBSCRIPTION" in
+  *prod*|*PROD*) echo "Error: refusing to deploy to a PROD subscription ($SUBSCRIPTION)."; exit 1 ;;
+esac
 RG_PREFIX="rg-cyberspace-analogues-"
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 TAG="$(git -C "$ROOT_DIR" rev-parse --short HEAD)"
